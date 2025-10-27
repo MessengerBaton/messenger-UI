@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.rmp_front.AppColors
@@ -26,30 +25,33 @@ fun BottomNavigationBar(navController: NavController) {
         BottomNavItem("Профиль", Routes.PROFILE, Icons.Default.Person)
     )
 
-    BottomNavigation(
-        backgroundColor = AppColors.TopBar,
-        contentColor = AppColors.TextPrimary
-    ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
+    val routesWithBottomNav = listOf(Routes.SETTINGS, Routes.CHATS_LIST, Routes.PROFILE)
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
-        items.forEach { item ->
-            BottomNavigationItem(
-                icon = { Icon(item.icon, contentDescription = item.label) },
-                label = { Text(item.label) },
-                selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
-                selectedContentColor = AppColors.TextPrimary,
-                unselectedContentColor = Color.Gray,
-                onClick = {
-                    navController.navigate(item.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+    if (currentRoute in routesWithBottomNav) {
+        BottomNavigation(
+            backgroundColor = AppColors.TopBar,
+            contentColor = AppColors.TextPrimary
+        ) {
+            items.forEach { item ->
+                BottomNavigationItem(
+                    icon = { Icon(item.icon, contentDescription = item.label) },
+                    label = { Text(item.label) },
+                    selected = currentRoute == item.route,
+                    selectedContentColor = AppColors.TextPrimary,
+                    unselectedContentColor = Color.Gray,
+                    onClick = {
+                        navController.navigate(item.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
                     }
-                }
-            )
+                )
+            }
         }
     }
 }

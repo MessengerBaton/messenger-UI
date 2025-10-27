@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -83,9 +84,9 @@ fun ProfileScreen() {
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = AppColors.InputBackground,
                 focusedIndicatorColor = AppColors.TextSecondary,
-                unfocusedIndicatorColor = AppColors.TextSecondary
             ),
-            textStyle = TextStyle(color = AppColors.InputText)
+            textStyle = TextStyle(color = AppColors.InputText),
+            shape = RoundedCornerShape(12.dp)
         )
 
         OutlinedTextField(
@@ -98,9 +99,9 @@ fun ProfileScreen() {
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = AppColors.InputBackground,
                 focusedIndicatorColor = AppColors.TextSecondary,
-                unfocusedIndicatorColor = AppColors.TextSecondary
             ),
-            textStyle = TextStyle(color = AppColors.InputText)
+            textStyle = TextStyle(color = AppColors.InputText),
+            shape = RoundedCornerShape(12.dp)
         )
     }
 }

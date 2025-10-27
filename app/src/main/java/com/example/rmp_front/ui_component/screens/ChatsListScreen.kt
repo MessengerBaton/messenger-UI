@@ -13,15 +13,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.rmp_front.AppColors
 import com.example.rmp_front.viewmodel.ChatsViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,39 +32,79 @@ fun ChatsListScreen(navController: NavHostController) {
     val viewModel: ChatsViewModel = viewModel()
     val chats by viewModel.chats.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Chats List", color = AppColors.TextPrimary) },
+                title = { Text("Chats", color = AppColors.TextPrimary, fontSize = 20.sp) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = AppColors.TopBar,
                     titleContentColor = AppColors.TextPrimary
-                )
+                ),
+                actions = {
+                    Box {
+                        IconButton(onClick = { expanded = true }) {
+                            Icon(
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = "Add chat",
+                                tint = AppColors.TextPrimary
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier.background(AppColors.InputBackground)
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Создать группу", color = AppColors.TextPrimary) },
+                                onClick = {
+                                    expanded = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Создать контакт", color = AppColors.TextPrimary) },
+                                onClick = {
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
             )
         },
         content = { padding ->
-            Column(modifier = Modifier
-                .padding(padding)
-                .background(AppColors.Background)
+            Column(
+                modifier = Modifier
+                    .padding(padding)
+                    .background(AppColors.TopBar)
             ) {
                 TextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                        .height(60.dp)
-                        .clip(RoundedCornerShape(32.dp))
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .height(55.dp)
+                        .clip(RoundedCornerShape(24.dp))
                         .background(AppColors.InputBackground),
-                    placeholder = { Text("Search chats", color = AppColors.PlaceholderText) },
+                    placeholder = { Text("Search", color = AppColors.PlaceholderText) },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = AppColors.InputBackground,
-                        unfocusedContainerColor = AppColors.InputBackground,
+                        unfocusedContainerColor = AppColors.Background,
                         focusedTextColor = AppColors.TextPrimary,
-                        unfocusedTextColor = AppColors.TextPrimary
+                        unfocusedTextColor = AppColors.TextPrimary,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
                     ),
-                    singleLine = true
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = "Search icon",
+                            tint = AppColors.PlaceholderText
+                        )
+                    }
                 )
 
                 LazyColumn(
@@ -75,7 +118,7 @@ fun ChatsListScreen(navController: NavHostController) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable { navController.navigate("chat/${chat.id}") }
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .padding(horizontal = 16.dp, vertical = 15.dp)
                         ) {
                             Box(
                                 modifier = Modifier
@@ -88,12 +131,19 @@ fun ChatsListScreen(navController: NavHostController) {
                                 color = AppColors.TextPrimary,
                                 modifier = Modifier
                                     .align(Alignment.CenterVertically)
-                                    .weight(1f)
+                                    .weight(1f),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = "12:20",
+                                color = AppColors.TextSecondary,
+                                modifier = Modifier.align(Alignment.CenterVertically)
                             )
                         }
                         Divider(
-                            color = AppColors.TextSecondary,
-                            thickness = 0.5.dp,
+                            color = AppColors.TopBar.copy(alpha = 0.2f),
+                            thickness = 0.3.dp,
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
                     }
