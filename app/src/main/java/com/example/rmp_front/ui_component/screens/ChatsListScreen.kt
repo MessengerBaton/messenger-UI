@@ -20,8 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
+import com.example.rmp_front.ui_component.navigation.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,6 +62,14 @@ fun ChatsListScreen(navController: NavHostController) {
                     ),
                     singleLine = true
                 )
+
+                // кнопочка чтоб попасть на /tmp
+                Button(
+                    onClick = { navController.navigate(Routes.TMP) },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text("СЕРВЕР")
+                }
 
                 LazyColumn(
                     modifier = Modifier

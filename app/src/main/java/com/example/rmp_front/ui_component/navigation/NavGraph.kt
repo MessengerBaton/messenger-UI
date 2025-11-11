@@ -6,10 +6,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.rmp_front.ui_component.screens.ChatScreen
 import com.example.rmp_front.ui_component.screens.ChatsListScreen
+import com.example.rmp_front.ui_component.screens.TmpScreen
 
 object Routes {
     const val CHATS_LIST = "chats_list"
     const val CHAT = "chat/{chatId}"
+    const val TMP = "tmp" // тест подключения к серверу
 }
 
 @Composable
@@ -21,6 +23,9 @@ fun NavGraph(navController: NavHostController) {
         composable(Routes.CHAT) { backStackEntry ->
             val chatId = backStackEntry.arguments?.getString("chatId") ?: "chat_1"
             ChatScreen(chatId = chatId, navController = navController)
+        }
+        composable(Routes.TMP) {
+            TmpScreen(navController = navController)
         }
     }
 }
