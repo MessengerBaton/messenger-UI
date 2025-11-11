@@ -1,1 +1,7 @@
 local.properties
+
+/.idea
+.kotlin
+
+.gradle
+gradle/*
