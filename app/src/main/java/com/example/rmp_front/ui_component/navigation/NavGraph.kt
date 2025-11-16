@@ -1,21 +1,32 @@
 package com.example.rmp_front.ui_component.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.rmp_front.ui_component.screens.ChangeProfileScreen
 import com.example.rmp_front.ui_component.screens.ChatScreen
 import com.example.rmp_front.ui_component.screens.ChatsListScreen
+import com.example.rmp_front.ui_component.screens.FriendProfileScreen
+import com.example.rmp_front.ui_component.screens.MyProfileScreen
+import com.example.rmp_front.ui_component.screens.SettingsScreen
 import com.example.rmp_front.ui_component.screens.TmpScreen
 
 object Routes {
+
+    const val SETTINGS = "settings"
+    const val PROFILE = "profile"
     const val CHATS_LIST = "chats_list"
     const val CHAT = "chat/{chatId}"
+    const val CHANGE_PROFILE = "change_profile"
+    const val FRIEND_PROFILE = "friend_profile"
+
     const val TMP = "tmp" // тест подключения к серверу
 }
 
 @Composable
-fun NavGraph(navController: NavHostController) {
+fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = Routes.CHATS_LIST) {
         composable(Routes.CHATS_LIST) {
             ChatsListScreen(navController = navController)
@@ -26,6 +37,18 @@ fun NavGraph(navController: NavHostController) {
         }
         composable(Routes.TMP) {
             TmpScreen(navController = navController)
+        }
+        composable(Routes.PROFILE) {
+            MyProfileScreen(navController = navController)
+        }
+        composable(Routes.SETTINGS) {
+            SettingsScreen(navController = navController)
+        }
+        composable(Routes.CHANGE_PROFILE){
+            ChangeProfileScreen(navController = navController)
+        }
+        composable(Routes.FRIEND_PROFILE){
+            FriendProfileScreen(navController = navController)
         }
     }
 }

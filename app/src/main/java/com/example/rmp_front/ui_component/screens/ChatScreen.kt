@@ -1,30 +1,32 @@
 package com.example.rmp_front.ui_component.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.ui.draw.clip
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.rmp_front.AppColors
 import com.example.rmp_front.data.MessageModel
 import com.example.rmp_front.data.RetrofitClient
+import com.example.rmp_front.ui_component.components.AddButton
+import com.example.rmp_front.ui_component.components.CustomTextField
 import com.example.rmp_front.ui_component.components.MessageCard
+import com.example.rmp_front.ui_component.navigation.Routes
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.text.SimpleDateFormat
@@ -32,23 +34,58 @@ import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(chatId: String, navController: NavHostController) {
+fun ChatScreen(chatId: String,
+               navController: NavHostController,
+
+) {
     var senderId by remember { mutableStateOf("user_1") }
     var messageText by remember { mutableStateOf("") }
     val messages = remember { mutableStateListOf<Pair<String, String>>() }
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    var expanded by remember { mutableStateOf(false) }
+
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Chat: $chatId") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = AppColors.TopBar),
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }){
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint = AppColors.TextPrimary)
+                title = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+
+                            IconButton(onClick = { navController.popBackStack() },
+                              ) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = "Back",
+                                    tint = AppColors.TextPrimary
+                                )
+                            }
+
+                        Text(
+                            text = "$chatId",
+                            color = AppColors.TextPrimary,
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable {navController.navigate(Routes.FRIEND_PROFILE)},
+                            textAlign = TextAlign.Center,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .padding(end = 30.dp)
+                                .size(44.dp)
+                                .background(Color.Gray.copy(alpha = 0.5f), shape = CircleShape)
+                                .clickable {navController.navigate(Routes.FRIEND_PROFILE)},
+                        )
+
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = AppColors.TopBar)
             )
         },
         bottomBar = {
@@ -56,29 +93,45 @@ fun ChatScreen(chatId: String, navController: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(AppColors.TopBar)
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .height(60.dp)
             ) {
-                TextField(
+                AddButton(
+                    modifier = Modifier
+                        .padding(start = 5.dp, top = 2.dp),
+                    onClick = { expanded = true }
+
+                )
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.background(AppColors.InputBackground)
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Добавить фото", color = AppColors.TextPrimary) },
+                        onClick = {
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Добавить видео", color = AppColors.TextPrimary) },
+                        onClick = {
+                            expanded = false
+                        }
+                    )
+                }
+
+                CustomTextField(
+                    icon = false,
+                    placeHolder = "Type here",
                     value = messageText,
                     onValueChange = { messageText = it },
                     modifier = Modifier
-                        .weight(0.8f)
-                        .clip(RoundedCornerShape(32.dp))
-                        .background(AppColors.InputBackground)
-                        .padding(horizontal = 4.dp, vertical = 2.dp),
-                    placeholder = { Text("Type here", color = AppColors.PlaceholderText) },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = AppColors.InputBackground,
-                        unfocusedContainerColor = AppColors.InputBackground,
-                        focusedTextColor = AppColors.TextPrimary,
-                        unfocusedTextColor = AppColors.TextPrimary
-                    ),
-                    keyboardOptions = KeyboardOptions.Default,
-                    keyboardActions = KeyboardActions(onDone = { /* Обработка Enter */ })
+                        .background(AppColors.TopBar)
+                        .width(290.dp)
+                        .padding(vertical = 6.dp)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+
                 Button(
                     onClick = {
                         if (messageText.isNotEmpty()) {
@@ -87,6 +140,7 @@ fun ChatScreen(chatId: String, navController: NavHostController) {
                                 try {
                                     val message = MessageModel(chatId = chatId, senderId = senderId, body = messageText)
                                     val response: Response<MessageModel> = RetrofitClient.apiService.sendMessage(message)
+
                                     if (response.isSuccessful) {
                                         messages.add(Pair("Отправлено: $messageText", time))
                                         coroutineScope.launch { listState.scrollToItem(messages.size - 1) }
@@ -100,14 +154,15 @@ fun ChatScreen(chatId: String, navController: NavHostController) {
                             }
                         }
                     },
-                    modifier = Modifier.size(40.dp),
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A2A2A))
+                    modifier = Modifier.padding(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = AppColors.TopBar)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowUpward,
+                        imageVector = Icons.Default.Send,
                         contentDescription = "Send",
-                        tint = AppColors.TextPrimary
+                        tint = AppColors.TextPrimary,
+                        modifier = Modifier.size(20.dp)
+
                     )
                 }
             }
