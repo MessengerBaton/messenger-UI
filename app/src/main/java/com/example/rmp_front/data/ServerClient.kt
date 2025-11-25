@@ -43,4 +43,10 @@ object ServerClient {
     suspend fun getTemp(): List<MessageModel> {
         return http.get("${BASE}/data-test").body()
     }
+
+    fun login(phone: String, password: String): LoginResponse {
+        return http.post("${BASE}/login") {
+            setBody(LoginRequest(phone, password))
+        }.body()
+    }
 }

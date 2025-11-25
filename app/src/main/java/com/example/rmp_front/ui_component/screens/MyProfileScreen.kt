@@ -54,7 +54,7 @@ fun MyProfileScreen(navController: NavController) {
                 modifier = Modifier.padding(end = 16.dp, top = 16.dp)
                     .align(Alignment.TopEnd)
                 .clickable {
-                    navController.navigate(Routes.CHANGE_PROFILE)
+                    navController.navigate(Routes.LOGIN)
                 }
             ) {
                 Text(
