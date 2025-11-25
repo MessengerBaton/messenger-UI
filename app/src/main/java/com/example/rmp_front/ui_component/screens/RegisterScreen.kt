@@ -1,6 +1,5 @@
 package com.example.rmp_front.ui_component.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,23 +8,38 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.rmp_front.AppColors
-import com.example.rmp_front.R
 import com.example.rmp_front.ui_component.navigation.Routes
+import com.example.rmp_front.viewmodel.LoginViewModel
 
 @Composable
 fun RegisterScreen(navController: NavController) {
 
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val viewModel: LoginViewModel = viewModel()
+    val response by viewModel.response.collectAsState()
+    val error by viewModel.error.collectAsState()
+
+    LaunchedEffect(response) {
+        if (response?.success == true) {
+            navController.navigate(Routes.CHATS_LIST)
+        }
+    }
+
+    LaunchedEffect(error) {
+        if (error != null) {
+            // что то надо выводить
+        }
+    }
 
     var isPhoneStage by remember { mutableStateOf(true) }
 
@@ -115,7 +129,9 @@ fun RegisterScreen(navController: NavController) {
                 Button(
                     onClick = {
                         if (password.isNotEmpty()) {
-                            // проверка в бд
+                            // проверка в бд в теории как то так
+//                            viewModel.checkPersonData(phone, password)
+
                             navController.navigate(Routes.CHATS_LIST)
                         }
                     },

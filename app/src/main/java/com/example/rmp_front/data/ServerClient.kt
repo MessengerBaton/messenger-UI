@@ -44,7 +44,7 @@ object ServerClient {
         return http.get("${BASE}/data-test").body()
     }
 
-    fun login(phone: String, password: String): LoginResponse {
+    suspend fun login(phone: String, password: String): LoginResponse {
         return http.post("${BASE}/login") {
             setBody(LoginRequest(phone, password))
         }.body()
