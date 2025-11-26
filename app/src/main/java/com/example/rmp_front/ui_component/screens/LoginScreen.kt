@@ -16,8 +16,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.rmp_front.AppColors
+import com.example.rmp_front.ui_component.components.AppToast
+import com.example.rmp_front.ui_component.components.rememberToastState
 import com.example.rmp_front.ui_component.navigation.Routes
 import com.example.rmp_front.viewmodel.LoginViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -25,6 +28,11 @@ fun LoginScreen(navController: NavController) {
     val viewModel: LoginViewModel = viewModel()
     val response by viewModel.response.collectAsState()
     val error by viewModel.error.collectAsState()
+
+    val (errorNotification, setErrorNotification) = rememberToastState()
+
+    var phone by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     LaunchedEffect(response) {
         if (response?.success == true) {
@@ -34,12 +42,9 @@ fun LoginScreen(navController: NavController) {
 
     LaunchedEffect(error) {
         if (error != null) {
-            // что то надо выводить
+            setErrorNotification("Please try again later")
         }
     }
-
-    var phone by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
 
     Box(modifier = Modifier.fillMaxSize()
         .background(AppColors.Background)) {
@@ -108,15 +113,18 @@ fun LoginScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    // логику проверки в бд надо написать
                     if (phone.isNotEmpty() && password.isNotEmpty()) {
+
                         if (phone.matches(Regex("89\\d{9}\$")) || phone.matches(Regex("\\+79\\d{9}\$"))) {
                             // проверка в бд в теории как то так
-
 //                            viewModel.checkPersonData(phone, password)
 
                             navController.navigate(Routes.CHATS_LIST)
+                        } else{
+                            setErrorNotification("Wrong phone format")
                         }
+                    } else{
+                        setErrorNotification("Please enter your data")
                     }
 
                 },
@@ -137,4 +145,17 @@ fun LoginScreen(navController: NavController) {
             }
         }
     }
+
+    AppToast(
+        message = errorNotification ?: "",
+        visible = errorNotification != null
+    )
+
+    LaunchedEffect(errorNotification) {
+        if (errorNotification != null) {
+            delay(3000)
+            setErrorNotification(null)
+        }
+    }
+
 }

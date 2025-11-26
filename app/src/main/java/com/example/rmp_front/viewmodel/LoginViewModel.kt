@@ -27,4 +27,16 @@ class LoginViewModel : ViewModel() {
 
         }
     }
+
+    // дописать функцию для отправки чисто логина на проверку
+
+//    fun checkPhone(phone: String) {
+//        viewModelScope.launch {
+//            try {
+//
+//            } catch(e: Exception) {
+//
+//            }
+//        }
+//    }
 }

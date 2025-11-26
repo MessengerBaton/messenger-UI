@@ -16,8 +16,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.rmp_front.AppColors
+import com.example.rmp_front.ui_component.components.AppToast
+import com.example.rmp_front.ui_component.components.rememberToastState
 import com.example.rmp_front.ui_component.navigation.Routes
 import com.example.rmp_front.viewmodel.LoginViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun RegisterScreen(navController: NavController) {
@@ -29,6 +32,10 @@ fun RegisterScreen(navController: NavController) {
     val response by viewModel.response.collectAsState()
     val error by viewModel.error.collectAsState()
 
+    val (errorNotification, setErrorNotification) = rememberToastState()
+
+    var isPhoneStage by remember { mutableStateOf(true) }
+
     LaunchedEffect(response) {
         if (response?.success == true) {
             navController.navigate(Routes.CHATS_LIST)
@@ -37,11 +44,9 @@ fun RegisterScreen(navController: NavController) {
 
     LaunchedEffect(error) {
         if (error != null) {
-            // что то надо выводить
+            setErrorNotification("Please try again later")
         }
     }
-
-    var isPhoneStage by remember { mutableStateOf(true) }
 
     Box(modifier = Modifier.fillMaxSize()
         .background(AppColors.Background)) {
@@ -97,8 +102,13 @@ fun RegisterScreen(navController: NavController) {
                         if (phone.isNotEmpty()) {
                             if (phone.matches(Regex("89\\d{9}\$")) || phone.matches(Regex("\\+79\\d{9}\$"))) {
                                 // проверка в бд
+//                                viewModel.checkPersonData(phone, password)
                                 isPhoneStage = false
+                            } else {
+                                setErrorNotification("Wrong phone format")
                             }
+                        } else{
+                            setErrorNotification("Please enter your phone number")
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -130,9 +140,11 @@ fun RegisterScreen(navController: NavController) {
                     onClick = {
                         if (password.isNotEmpty()) {
                             // проверка в бд в теории как то так
-//                            viewModel.checkPersonData(phone, password)
+//                            viewModel.checkPhone(phone)
 
                             navController.navigate(Routes.CHATS_LIST)
+                        } else{
+                            setErrorNotification("Please enter your password")
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -154,5 +166,18 @@ fun RegisterScreen(navController: NavController) {
             }
         }
     }
+
+    AppToast(
+        message = errorNotification ?: "",
+        visible = errorNotification != null
+    )
+
+    LaunchedEffect(errorNotification) {
+        if (errorNotification != null) {
+            delay(3000)
+            setErrorNotification(null)
+        }
+    }
+
 }
 

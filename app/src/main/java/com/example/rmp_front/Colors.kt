@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.Color
 
 object AppColors {
     val Background = Color(0xFF191C20) // Темный фон как на фото
-    val BackgroundShadow = Color(0x4D191C20) // 30% прозрачности
     val TopBar = Color(0xFF2E3339) // Серый для топ-бара
     val MessageCard = Color(0xFF2E3339) // Карточки сообщений
     val TextPrimary = Color.White
@@ -15,6 +14,8 @@ object AppColors {
     val PlaceholderText = Color(0xFF808080) // Серый плейсхолдер
 
     val BaseColor = Color(0xFF2E3339)
+
+    val ErrorColor = Color(0xFF7C2626)
     val Transparent = Color.Transparent
 }
 
