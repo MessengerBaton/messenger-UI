@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.example.rmp_front.AppColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.navigation.NavController
 import com.example.rmp_front.ui_component.components.ChangeItem
@@ -31,7 +30,7 @@ fun ChangeProfileScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppColors.Background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Box(
             modifier = Modifier
@@ -45,30 +44,30 @@ fun ChangeProfileScreen(navController: NavController) {
                         .padding(top = 30.dp)
                         .size(240.dp)
                         .clip(CircleShape)
-                        .background(AppColors.BaseColor)
+                        .background(MaterialTheme.colorScheme.primary)
                 )
                 Box(
                     modifier = Modifier
                         .clickable { expanded = true }
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(AppColors.BaseColor)
+                        .background(MaterialTheme.colorScheme.primary)
                         .align ( Alignment.Bottom ),
 
                 ){
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
-                        modifier = Modifier.background(AppColors.InputBackground)
+                        modifier = Modifier.background(MaterialTheme.colorScheme.background)
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Change photo", color = AppColors.TextPrimary) },
+                            text = { Text("Change photo", color = MaterialTheme.colorScheme.onPrimary) },
                             onClick = {
                                 expanded = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Delete photo", color = AppColors.TextPrimary) },
+                            text = { Text("Delete photo", color = MaterialTheme.colorScheme.onPrimary) },
                             onClick = {
                                 expanded = false
                             }
@@ -86,7 +85,7 @@ fun ChangeProfileScreen(navController: NavController) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Back",
-                        tint = AppColors.TextPrimary
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -99,9 +98,9 @@ fun ChangeProfileScreen(navController: NavController) {
             ) {
                 Text(
                     text = "Save",
-                    color = AppColors.TextPrimary,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier
-                        .background(AppColors.BaseColor, shape = CircleShape)
+                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
                         .padding(10.dp)
                 )
             }

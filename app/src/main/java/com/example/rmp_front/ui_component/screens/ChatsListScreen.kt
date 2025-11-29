@@ -1,5 +1,3 @@
-
-
 package com.example.rmp_front.ui_component.screens
 
 import androidx.compose.foundation.background
@@ -13,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.rmp_front.AppColors
 import com.example.rmp_front.viewmodel.ChatsViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,14 +31,14 @@ fun ChatsListScreen(navController: NavHostController) {
         topBar = {
             TopAppBar(
                 title = { Text("Chats",
-                    color = AppColors.TextPrimary,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 30.sp,
                     modifier = Modifier.padding(start = 10.dp)
 
                 ) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AppColors.TopBar,
-                    titleContentColor = AppColors.TextPrimary
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.primary
                 ),
                 actions = {
                     AddButton(
@@ -52,16 +49,16 @@ fun ChatsListScreen(navController: NavHostController) {
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
-                        modifier = Modifier.background(AppColors.InputBackground)
+                        modifier = Modifier.background(MaterialTheme.colorScheme.background)
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Создать группу", color = AppColors.TextPrimary) },
+                            text = { Text("Создать группу", color = MaterialTheme.colorScheme.onPrimary) },
                             onClick = {
                                 expanded = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Создать контакт", color = AppColors.TextPrimary) },
+                            text = { Text("Создать контакт", color = MaterialTheme.colorScheme.onPrimary) },
                             onClick = {
                                 expanded = false
                             }
@@ -76,7 +73,7 @@ fun ChatsListScreen(navController: NavHostController) {
             Column(
                 modifier = Modifier
                     .padding(padding)
-                    .background(AppColors.TopBar)
+                    .background(MaterialTheme.colorScheme.primary)
             ) {
 
                 CustomTextField(
@@ -85,7 +82,7 @@ fun ChatsListScreen(navController: NavHostController) {
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
                     modifier = Modifier
-                        .background(AppColors.TopBar)
+                        .background(MaterialTheme.colorScheme.primary)
                         .fillMaxWidth()
                         .padding(horizontal = 15.dp, vertical = 6.dp)
                 )
@@ -101,7 +98,7 @@ fun ChatsListScreen(navController: NavHostController) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(AppColors.Background)
+                        .background(MaterialTheme.colorScheme.background)
                 ) {
                     val filteredChats = chats.filter { it.name.contains(searchQuery, ignoreCase = true) }
 

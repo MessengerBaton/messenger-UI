@@ -9,11 +9,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.rmp_front.AppColors
 
 @Composable
 fun AddButton(
@@ -30,13 +30,13 @@ fun AddButton(
         Box(
             modifier = Modifier
                 .size(24.dp)
-                .border(1.dp, AppColors.TextPrimary, CircleShape),
+                .border(1.dp, MaterialTheme.colorScheme.onPrimary, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Outlined.Add,
                 contentDescription = "Add chat",
-                tint = AppColors.TextPrimary,
+                tint = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.size(20.dp)
             )
         }

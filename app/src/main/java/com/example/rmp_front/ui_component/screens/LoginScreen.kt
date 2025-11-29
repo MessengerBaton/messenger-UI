@@ -15,11 +15,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.rmp_front.AppColors
 import com.example.rmp_front.ui_component.components.AppToast
 import com.example.rmp_front.ui_component.components.rememberToastState
 import com.example.rmp_front.ui_component.navigation.Routes
-import com.example.rmp_front.viewmodel.LoginViewModel
+import com.example.rmp_front.viewmodel.Login.LoginViewModel
 import kotlinx.coroutines.delay
 
 @Composable
@@ -34,11 +33,11 @@ fun LoginScreen(navController: NavController) {
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    LaunchedEffect(response) {
-        if (response?.success == true) {
-            navController.navigate(Routes.CHATS_LIST)
-        }
-    }
+//    LaunchedEffect(response) {
+//        if (response?.success == true) {
+//            navController.navigate(Routes.CHATS_LIST)
+//        }
+//    }
 
     LaunchedEffect(error) {
         if (error != null) {
@@ -47,11 +46,11 @@ fun LoginScreen(navController: NavController) {
     }
 
     Box(modifier = Modifier.fillMaxSize()
-        .background(AppColors.Background)) {
+        .background(MaterialTheme.colorScheme.background)) {
 
         Text(
             text = "Welcome to BatonGram!",
-            color = AppColors.TextPrimary,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
 
@@ -61,7 +60,7 @@ fun LoginScreen(navController: NavController) {
 
         Text(
             text = "Please enter your data to log in",
-            color = AppColors.TextPrimary,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 16.sp,
 
             modifier = Modifier.padding(top = 320.dp)
@@ -82,9 +81,9 @@ fun LoginScreen(navController: NavController) {
                 onValueChange = { phone = it },
                 label = { Text("Phone number") },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = AppColors.TextPrimary,
-                    unfocusedTextColor = AppColors.TextPrimary,
-                    cursorColor = AppColors.TextPrimary,
+                    focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    cursorColor = MaterialTheme.colorScheme.onPrimary,
                 ),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 shape = RoundedCornerShape(12.dp),
@@ -100,9 +99,9 @@ fun LoginScreen(navController: NavController) {
                 onValueChange = { password = it },
                 label = { Text("Password") },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = AppColors.TextPrimary,
-                    unfocusedTextColor = AppColors.TextPrimary,
-                    cursorColor = AppColors.TextPrimary,
+                    focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    cursorColor = MaterialTheme.colorScheme.onPrimary,
                 ),
                 visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(12.dp),
@@ -130,7 +129,7 @@ fun LoginScreen(navController: NavController) {
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = AppColors.BaseColor
+                    containerColor = MaterialTheme.colorScheme.primary
                 )
             ) {
                 Text(text = "Log In")
@@ -141,7 +140,7 @@ fun LoginScreen(navController: NavController) {
             TextButton(onClick = {
                 navController.navigate(Routes.REGISTER)
             }) {
-                Text("Create account")
+                Text("Create account", color = MaterialTheme.colorScheme.onSecondary)
             }
         }
     }

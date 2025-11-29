@@ -6,13 +6,13 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.rmp_front.AppColors
 @Composable
 fun AppToast(
     message: String,
@@ -32,7 +32,7 @@ fun AppToast(
                 .padding(horizontal = 80.dp)
                 .wrapContentHeight()
                 .background(
-                    AppColors.ErrorColor,
+                    MaterialTheme.colorScheme.error,
                     shape = RoundedCornerShape(12.dp)
                 )
                 .then(modifier),
@@ -40,7 +40,7 @@ fun AppToast(
         ) {
             Text(
                 text = message,
-                color = AppColors.TextPrimary,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(all = 10.dp)
             )

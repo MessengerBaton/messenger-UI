@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -18,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.rmp_front.AppColors
 import com.example.rmp_front.ui_component.navigation.Routes
 
 @Composable
@@ -35,8 +35,8 @@ fun BottomNavigationBar(navController: NavController) {
 
     if (currentRoute in routesWithBottomNav) {
         BottomNavigation(
-            backgroundColor = AppColors.TopBar,
-            contentColor = AppColors.TextPrimary,
+            backgroundColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.height(60.dp)
         ) {
             items.forEach { item ->
@@ -44,7 +44,7 @@ fun BottomNavigationBar(navController: NavController) {
                     icon = { Icon(item.icon, contentDescription = item.label) },
                     label = { Text(item.label) },
                     selected = currentRoute == item.route,
-                    selectedContentColor = AppColors.TextPrimary,
+                    selectedContentColor = MaterialTheme.colorScheme.onPrimary,
                     unselectedContentColor = Color.Gray,
                     onClick = {
                         navController.navigate(item.route) {

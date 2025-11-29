@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.rmp_front.AppColors
 import com.example.rmp_front.viewmodel.ChatItem
 
 @Composable
@@ -47,14 +47,14 @@ fun MiniChatInList(
             Text(
                 text = "${chat.name}",
                 fontSize = 20.sp,
-                color = AppColors.TextPrimary,
+                color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.padding(start = 10.dp, top = 5.dp)
             )
 
             Text(
                 text = "last message",
                 fontSize = 14.sp,
-                color = AppColors.TextSecondary,
+                color = MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier.padding(start = 10.dp, top = 15.dp)
             )
 
@@ -62,13 +62,13 @@ fun MiniChatInList(
         Text(
             text = "14:88",
             fontSize = 14.sp,
-            color = AppColors.TextSecondary,
+            color = MaterialTheme.colorScheme.onSecondary,
             modifier = Modifier.padding(start = 180.dp, top = 10.dp)
         )
 
     }
     Divider(
-        color = AppColors.TextSecondary,
+        color = MaterialTheme.colorScheme.onSecondary,
         thickness = 0.5.dp,
         modifier = Modifier.padding(horizontal = 16.dp)
     )

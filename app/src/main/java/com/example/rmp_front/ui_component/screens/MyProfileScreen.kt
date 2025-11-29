@@ -12,7 +12,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.rmp_front.AppColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
@@ -35,7 +34,7 @@ fun MyProfileScreen(navController: NavController) {
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .background(AppColors.Background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Box(
             modifier = Modifier
@@ -48,20 +47,20 @@ fun MyProfileScreen(navController: NavController) {
                     .fillMaxWidth()
                     .height(400.dp)
                     .clip(RectangleShape)
-                    .background(AppColors.BaseColor)
+                    .background(MaterialTheme.colorScheme.primary)
             )
             Box(
                 modifier = Modifier.padding(end = 16.dp, top = 16.dp)
                     .align(Alignment.TopEnd)
                 .clickable {
-                    navController.navigate(Routes.LOGIN)
+                    navController.navigate(Routes.CHANGE_PROFILE)
                 }
             ) {
                 Text(
                     text = "Change",
-                    color = AppColors.TextPrimary,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier
-                        .background(AppColors.InputBackground.copy(alpha = 0.45f), shape = CircleShape)
+                        .background(MaterialTheme.colorScheme.background.copy(alpha = 0.45f), shape = CircleShape)
                         .padding(10.dp)
                 )
             }
@@ -82,7 +81,7 @@ fun MyProfileScreen(navController: NavController) {
             ) {
                 Text(
                     text = name,
-                    color = AppColors.TextPrimary,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 10.dp)
@@ -90,7 +89,7 @@ fun MyProfileScreen(navController: NavController) {
                 )
                 Text(
                     text = username,
-                    color = AppColors.TextSecondary,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 16.sp
                 )
             }
@@ -103,7 +102,7 @@ fun MyProfileScreen(navController: NavController) {
         ) {
             Text(
                 text = "Kitty number",
-                color = AppColors.TextSecondary,
+                color = MaterialTheme.colorScheme.onSecondary,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(start = 30.dp)
             )
@@ -111,7 +110,7 @@ fun MyProfileScreen(navController: NavController) {
 
             Text(
                 text = "Kitty info",
-                color = AppColors.TextSecondary,
+                color =MaterialTheme.colorScheme.onSecondary,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(start = 30.dp)
             )
@@ -136,8 +135,8 @@ fun GradientBlurOverlay(
                 Brush.verticalGradient(
                     colors = listOf(
                         Color.Transparent,
-                        Color.Black.copy(alpha = 0.15f),
-                        Color.Black.copy(alpha = 0.45f)
+                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.45f)
                     )
                 )
             )

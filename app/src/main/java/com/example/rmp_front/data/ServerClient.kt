@@ -49,4 +49,8 @@ object ServerClient {
             setBody(LoginRequest(phone, password))
         }.body()
     }
+
+    suspend fun register(phone: String, password: String) {
+        return
+    }
 }

@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,7 +24,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.rmp_front.AppColors
 
 
 @Composable
@@ -38,7 +38,7 @@ fun CustomTextField(
         modifier = modifier
             .height(36.dp)
             .clip(RoundedCornerShape(18.dp))
-            .background(AppColors.InputBackground)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 12.dp),
         contentAlignment = Alignment.CenterStart
     ) {
@@ -47,7 +47,7 @@ fun CustomTextField(
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = null,
-                    tint = AppColors.PlaceholderText,
+                    tint = MaterialTheme.colorScheme.onTertiary,
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -59,17 +59,17 @@ fun CustomTextField(
                 onValueChange = onValueChange,
                 singleLine = true,
                 textStyle = TextStyle(
-                    color = AppColors.TextPrimary,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 16.sp
                 ),
-                cursorBrush = SolidColor(AppColors.TextPrimary),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.onPrimary),
                 modifier = Modifier
                     .fillMaxWidth(),
                 decorationBox = { innerTextField ->
                     if (value.isEmpty()) {
                         Text(
                             text = placeHolder,
-                            color = AppColors.PlaceholderText,
+                            color = MaterialTheme.colorScheme.onTertiary,
                             fontSize = 16.sp
                         )
                     }

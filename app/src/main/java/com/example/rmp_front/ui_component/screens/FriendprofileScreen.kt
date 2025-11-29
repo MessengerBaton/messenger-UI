@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.rmp_front.AppColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.navigation.NavController
@@ -34,7 +33,7 @@ fun FriendProfileScreen(navController: NavController) {
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .background(AppColors.Background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Box(
             modifier = Modifier
@@ -47,7 +46,7 @@ fun FriendProfileScreen(navController: NavController) {
                     .fillMaxWidth()
                     .height(400.dp)
                     .clip(RectangleShape)
-                    .background(AppColors.BaseColor)
+                    .background(MaterialTheme.colorScheme.primary)
             )
 
             Box(
@@ -60,7 +59,7 @@ fun FriendProfileScreen(navController: NavController) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Back",
-                        tint = AppColors.TextPrimary
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -81,7 +80,7 @@ fun FriendProfileScreen(navController: NavController) {
             ) {
                 Text(
                     text = username,
-                    color = AppColors.TextPrimary,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 16.sp,
                     modifier = Modifier.align(Alignment.CenterStart)
                 )
@@ -94,7 +93,7 @@ fun FriendProfileScreen(navController: NavController) {
                         onClick = {navController.popBackStack() } ,
                         modifier = Modifier
                             .background(
-                                color = AppColors.InputBackground.copy(alpha = 0.5f),
+                                color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
                                 shape = RoundedCornerShape(12.dp)
                             )
                             .padding(2.dp),
@@ -103,7 +102,7 @@ fun FriendProfileScreen(navController: NavController) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Search in chat",
-                            tint = AppColors.TextSecondary
+                            tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }
                     Spacer(modifier = Modifier.width(10.dp))
@@ -112,7 +111,7 @@ fun FriendProfileScreen(navController: NavController) {
                         onClick = { navController.popBackStack() } ,
                         modifier = Modifier
                             .background(
-                                color = AppColors.InputBackground.copy(alpha = 0.5f),
+                                color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
                                 shape = RoundedCornerShape(12.dp)
                             )
                             .padding(2.dp)
@@ -120,14 +119,11 @@ fun FriendProfileScreen(navController: NavController) {
                         Icon(
                             imageVector = Icons.Default.MoreHoriz,
                             contentDescription = "More",
-                            tint = AppColors.TextSecondary
+                            tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }
                 }
-
-
             }
-
         }
 
 
@@ -136,7 +132,7 @@ fun FriendProfileScreen(navController: NavController) {
         ) {
             Text(
                 text = "Kitty name",
-                color = AppColors.TextSecondary,
+                color = MaterialTheme.colorScheme.onSecondary,
                 fontSize = 12.sp,
                 modifier = Modifier.padding(start = 20.dp)
             )
@@ -144,7 +140,7 @@ fun FriendProfileScreen(navController: NavController) {
 
             Text(
                 text = "Kitty number",
-                color = AppColors.TextSecondary,
+                color = MaterialTheme.colorScheme.onSecondary,
                 fontSize = 12.sp,
                 modifier = Modifier.padding(start = 20.dp)
             )
@@ -152,7 +148,7 @@ fun FriendProfileScreen(navController: NavController) {
 
             Text(
                 text = "Kitty info",
-                color = AppColors.TextSecondary,
+                color = MaterialTheme.colorScheme.onSecondary,
                 fontSize = 12.sp,
                 modifier = Modifier.padding(start = 20.dp)
             )
@@ -167,21 +163,21 @@ fun FriendProfileScreen(navController: NavController) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(AppColors.BaseColor)
+                    .background(MaterialTheme.colorScheme.primary)
                     .height(40.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 Text(
                     text = "Photo",
-                    color = if (selectedTab == 0) AppColors.TextPrimary else AppColors.TextSecondary,
+                    color = if (selectedTab == 0) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary,
                     modifier = Modifier
                         .clickable { selectedTab = 0 }
                 )
 
                 Text(
                     text = "Video",
-                    color = if (selectedTab == 1) AppColors.TextPrimary else AppColors.TextSecondary,
+                    color = if (selectedTab == 1) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary,
                     modifier = Modifier
                         .clickable { selectedTab = 1 }
                 )
@@ -189,10 +185,10 @@ fun FriendProfileScreen(navController: NavController) {
 
             // ----- GRID -----
             if (selectedTab == 0) {
-                Text("Photo", color = AppColors.TextSecondary)
+                Text("Photo", color = MaterialTheme.colorScheme.onSecondary)
 //            отображение сетки под фото
             } else {
-                Text("Video", color = AppColors.TextSecondary)
+                Text("Video", color = MaterialTheme.colorScheme.onSecondary)
 //            отображение сетки под видео
             }
         }

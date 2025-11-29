@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import com.example.rmp_front.AppColors
 import com.example.rmp_front.data.MessageModel
 import com.example.rmp_front.data.RetrofitClient
 import com.example.rmp_front.ui_component.components.AddButton
@@ -46,6 +45,8 @@ fun ChatScreen(chatId: String,
     var expanded by remember { mutableStateOf(false) }
 
 
+
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -60,13 +61,13 @@ fun ChatScreen(chatId: String,
                                 Icon(
                                     imageVector = Icons.Default.ArrowBack,
                                     contentDescription = "Back",
-                                    tint = AppColors.TextPrimary
+                                    tint = MaterialTheme.colorScheme.onPrimary
                                 )
                             }
 
                         Text(
                             text = "$chatId",
-                            color = AppColors.TextPrimary,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier
                                 .weight(1f)
                                 .clickable {navController.navigate(Routes.FRIEND_PROFILE)},
@@ -85,14 +86,14 @@ fun ChatScreen(chatId: String,
 
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = AppColors.TopBar)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
             )
         },
         bottomBar = {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(AppColors.TopBar)
+                    .background(MaterialTheme.colorScheme.primary)
                     .height(60.dp)
             ) {
                 AddButton(
@@ -105,16 +106,16 @@ fun ChatScreen(chatId: String,
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
-                    modifier = Modifier.background(AppColors.InputBackground)
+                    modifier = Modifier.background(MaterialTheme.colorScheme.background)
                 ) {
                     DropdownMenuItem(
-                        text = { Text("Добавить фото", color = AppColors.TextPrimary) },
+                        text = { Text("Добавить фото", color = MaterialTheme.colorScheme.onPrimary) },
                         onClick = {
                             expanded = false
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text("Добавить видео", color = AppColors.TextPrimary) },
+                        text = { Text("Добавить видео", color = MaterialTheme.colorScheme.onPrimary) },
                         onClick = {
                             expanded = false
                         }
@@ -127,7 +128,7 @@ fun ChatScreen(chatId: String,
                     value = messageText,
                     onValueChange = { messageText = it },
                     modifier = Modifier
-                        .background(AppColors.TopBar)
+                        .background(MaterialTheme.colorScheme.primary)
                         .width(290.dp)
                         .padding(vertical = 6.dp)
                 )
@@ -155,12 +156,12 @@ fun ChatScreen(chatId: String,
                         }
                     },
                     modifier = Modifier.padding(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = AppColors.TopBar)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Send,
                         contentDescription = "Send",
-                        tint = AppColors.TextPrimary,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(20.dp)
 
                     )
@@ -173,7 +174,7 @@ fun ChatScreen(chatId: String,
                 .fillMaxSize()
                 .padding(padding)
                 .focusable()
-                .background(AppColors.Background),
+                .background(MaterialTheme.colorScheme.background),
             state = listState
         ) {
             items(messages) { message ->

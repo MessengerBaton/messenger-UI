@@ -30,7 +30,13 @@ object Routes {
 }
 
 @Composable
-fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
+fun NavGraph(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    darkTheme: Boolean,
+    onThemeChange: (Boolean) -> Unit,
+
+    ) {
     NavHost(navController = navController, startDestination = Routes.LOGIN) {
         composable(Routes.LOGIN){
             LoginScreen(navController = navController)
@@ -49,7 +55,11 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             MyProfileScreen(navController = navController)
         }
         composable(Routes.SETTINGS) {
-            SettingsScreen(navController = navController)
+            SettingsScreen(
+                navController = navController,
+                darkTheme = darkTheme,
+                onThemeChange = onThemeChange
+                )
         }
         composable(Routes.CHANGE_PROFILE){
             ChangeProfileScreen(navController = navController)
