@@ -84,45 +84,47 @@ fun FriendProfileScreen(navController: NavController) {
                     fontSize = 16.sp,
                     modifier = Modifier.align(Alignment.CenterStart)
                 )
-                Row(modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 40.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                ){
-                    IconButton(
-                        onClick = {navController.popBackStack() } ,
-                        modifier = Modifier
-                            .background(
-                                color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .padding(2.dp),
+                // я не придумала какие не заебные по исполнению функции туда впихнуть
 
-                        ) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search in chat",
-                            tint = MaterialTheme.colorScheme.onSecondary
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-
-                    IconButton(
-                        onClick = { navController.popBackStack() } ,
-                        modifier = Modifier
-                            .background(
-                                color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .padding(2.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.MoreHoriz,
-                            contentDescription = "More",
-                            tint = MaterialTheme.colorScheme.onSecondary
-                        )
-                    }
-                }
+//                Row(modifier = Modifier
+//                    .align(Alignment.BottomEnd)
+//                    .padding(end = 40.dp),
+//                verticalAlignment = Alignment.CenterVertically,
+//                ){
+//                    IconButton(
+//                        onClick = {navController.popBackStack() } ,
+//                        modifier = Modifier
+//                            .background(
+//                                color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
+//                                shape = RoundedCornerShape(12.dp)
+//                            )
+//                            .padding(2.dp),
+//
+//                        ) {
+//                        Icon(
+//                            imageVector = Icons.Default.Search,
+//                            contentDescription = "Search in chat",
+//                            tint = MaterialTheme.colorScheme.onSecondary
+//                        )
+//                    }
+//                    Spacer(modifier = Modifier.width(10.dp))
+//
+//                    IconButton(
+//                        onClick = { navController.popBackStack() } ,
+//                        modifier = Modifier
+//                            .background(
+//                                color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
+//                                shape = RoundedCornerShape(12.dp)
+//                            )
+//                            .padding(2.dp)
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Default.MoreHoriz,
+//                            contentDescription = "More",
+//                            tint = MaterialTheme.colorScheme.onSecondary
+//                        )
+//                    }
+//                }
             }
         }
 

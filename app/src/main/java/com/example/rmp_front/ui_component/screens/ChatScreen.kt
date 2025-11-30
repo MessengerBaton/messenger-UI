@@ -175,10 +175,12 @@ fun ChatScreen(chatId: String,
                 .padding(padding)
                 .focusable()
                 .background(MaterialTheme.colorScheme.background),
-            state = listState
+            state = listState,
+            reverseLayout = false,
+            contentPadding = PaddingValues(bottom = 8.dp),
         ) {
             items(messages) { message ->
-                MessageCard(message.first, message.second)
+                MessageCard(message.first, message.second, true)
             }
         }
     }
