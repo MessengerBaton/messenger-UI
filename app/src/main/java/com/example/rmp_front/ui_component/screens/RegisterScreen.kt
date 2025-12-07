@@ -21,7 +21,7 @@ import androidx.navigation.NavController
 import com.example.rmp_front.ui_component.components.AppToast
 import com.example.rmp_front.ui_component.components.rememberToastState
 import com.example.rmp_front.ui_component.navigation.Routes
-import com.example.rmp_front.viewmodel.Login.LoginViewModel
+import com.example.rmp_front.viewmodel.Register.RegisterViewModel
 import kotlinx.coroutines.delay
 
 @Composable
@@ -30,28 +30,32 @@ fun RegisterScreen(navController: NavController) {
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    val viewModel: LoginViewModel = viewModel()
-    val response by viewModel.response.collectAsState()
+    val viewModel: RegisterViewModel = viewModel()
+    val success by viewModel.success.collectAsState()
     val error by viewModel.error.collectAsState()
 
     val (errorNotification, setErrorNotification) = rememberToastState()
 
     var isPhoneStage by remember { mutableStateOf(true) }
 
-//    LaunchedEffect(response) {
-//        if (response?.success == true) {
-//            navController.navigate(Routes.CHATS_LIST)
-//        }
-//    }
-
-    LaunchedEffect(error) {
-        if (error != null) {
-            setErrorNotification("Please try again later")
+    LaunchedEffect(success) {
+        if (success) {
+            navController.navigate(Routes.CHATS_LIST) {
+                popUpTo(Routes.REGISTER) { inclusive = true }
+            }
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)) {
+    LaunchedEffect(error) {
+        if (error != null) {
+            error?.let { setErrorNotification(it) }
+        }
+    }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
 
         Text(
             text = "Welcome to BatonGram!",
@@ -103,13 +107,11 @@ fun RegisterScreen(navController: NavController) {
                     onClick = {
                         if (phone.isNotEmpty()) {
                             if (phone.matches(Regex("89\\d{9}\$")) || phone.matches(Regex("\\+79\\d{9}\$"))) {
-                                // проверка в бд
-//                                viewModel.checkPersonData(phone, password)
                                 isPhoneStage = false
                             } else {
                                 setErrorNotification("Wrong phone format")
                             }
-                        } else{
+                        } else {
                             setErrorNotification("Please enter your phone number")
                         }
                     },
@@ -124,9 +126,10 @@ fun RegisterScreen(navController: NavController) {
                 Box(
                     modifier = Modifier
                         .align(Alignment.Start)
-                        .clickable {  }
+                        .clickable { }
                 ) {
-                    IconButton(onClick = {isPhoneStage = true},
+                    IconButton(
+                        onClick = { isPhoneStage = true },
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
@@ -154,11 +157,10 @@ fun RegisterScreen(navController: NavController) {
                 Button(
                     onClick = {
                         if (password.isNotEmpty()) {
-                            // проверка в бд в теории как то так
-//                            viewModel.checkPhone(phone)
-
+                            // сразу регаемся, если че с бэка прилетает отказ
+                            viewModel.register(phone, password)
                             navController.navigate(Routes.CHATS_LIST)
-                        } else{
+                        } else {
                             setErrorNotification("Please enter your password")
                         }
                     },
@@ -169,6 +171,15 @@ fun RegisterScreen(navController: NavController) {
                 ) {
                     Text(text = "Register")
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                TextButton(onClick = {
+                    navController.navigate(Routes.LOGIN)
+                }) {
+                    Text("Log in account", color = MaterialTheme.colorScheme.onSecondary)
+                }
+
             }
 
             Spacer(modifier = Modifier.height(16.dp))

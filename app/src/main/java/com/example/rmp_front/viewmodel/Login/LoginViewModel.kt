@@ -27,7 +27,8 @@ class LoginViewModel : ViewModel() {
 
             result.onSuccess {
                 _response.value = true
-            }.onSuccess {
+            }.onFailure {
+                _error.value = it.message
                 _response.value = false
             }
 

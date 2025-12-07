@@ -15,7 +15,7 @@ object ServerClient {
     // Подставь сюда адрес своего сервера:
     // - при эмуляторе: "http://10.0.2.2:8080/"
     // - при физическом устройстве: "http://192.168.x.y:8080/"
-    private const val BASE = "http://10.0.2.2:8080/"
+    private const val BASE = "http://192.168.x.y:8080/"
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -50,7 +50,9 @@ object ServerClient {
         }.body()
     }
 
-    suspend fun register(phone: String, password: String) {
-        return
+    suspend fun register(phone: String, password: String): AuthResponse {
+        return http.post("${BASE}/register") {
+            setBody(RegisterRequest(phone, password))
+        }.body()
     }
 }
