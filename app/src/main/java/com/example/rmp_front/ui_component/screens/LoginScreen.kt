@@ -18,8 +18,10 @@ import androidx.navigation.NavController
 import com.example.rmp_front.ui_component.components.AppToast
 import com.example.rmp_front.ui_component.components.rememberToastState
 import com.example.rmp_front.ui_component.navigation.Routes
-import com.example.rmp_front.viewmodel.Login.LoginViewModel
+import com.example.rmp_front.viewmodel.login.LoginViewModel
+
 import kotlinx.coroutines.delay
+
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -33,15 +35,15 @@ fun LoginScreen(navController: NavController) {
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-//    LaunchedEffect(response) {
-//        if (response?.success == true) {
-//            navController.navigate(Routes.CHATS_LIST)
-//        }
-//    }
+    LaunchedEffect(response) {
+        if (response == true) {
+            navController.navigate(Routes.CHATS_LIST)
+        }
+    }
 
     LaunchedEffect(error) {
         if (error != null) {
-            setErrorNotification("Please try again later")
+            setErrorNotification(error!!)
         }
     }
 
@@ -112,19 +114,8 @@ fun LoginScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    if (phone.isNotEmpty() && password.isNotEmpty()) {
-
-                        if (phone.matches(Regex("89\\d{9}\$")) || phone.matches(Regex("\\+79\\d{9}\$"))) {
-                            // проверка в бд в теории как то так
-//                            viewModel.checkPersonData(phone, password)
-
-                            navController.navigate(Routes.CHATS_LIST)
-                        } else{
-                            setErrorNotification("Wrong phone format")
-                        }
-                    } else{
-                        setErrorNotification("Please enter your data")
-                    }
+                    // проверка в бд в теории как то так
+                    viewModel.checkPersonData(phone, password)
 
                 },
                 modifier = Modifier.fillMaxWidth(),

@@ -45,12 +45,17 @@ object ServerClient {
     }
 
     suspend fun login(phone: String, password: String): LoginResponse {
-        return http.post("${BASE}/login") {
-            setBody(LoginRequest(phone, password))
-        }.body()
+//        return http.post("${BASE}/login") {
+//            setBody(LoginRequest(phone, password))
+//        }.body()
+        return LoginResponse(
+            success = true,
+        )
     }
 
-    suspend fun register(phone: String, password: String) {
-        return
+    suspend fun register(phone: String, password: String): RegisterResponse {
+        return RegisterResponse(
+            success = true,
+        )
     }
 }

@@ -1,8 +1,5 @@
 package com.example.rmp_front.data.repository
 
-import com.example.rmp_front.data.LoginRequest
-
-
 import com.example.rmp_front.data.ServerClient
 
 class AuthRepository (private val api: ServerClient) {
@@ -14,8 +11,8 @@ class AuthRepository (private val api: ServerClient) {
     }
 
     suspend fun register(phone: String, password: String) {
-//        val resp = ServerClient.register(phone, password)
-//        if (!resp.success) throw Exception(resp.error ?: "Unknown error")
+        val resp = api.register(phone, password)
+        if (!resp.success) throw Exception(resp.message ?: "Unknown error")
     }
 }
 
