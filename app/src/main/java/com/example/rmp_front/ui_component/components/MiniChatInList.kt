@@ -20,19 +20,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.rmp_front.viewmodel.ChatItem
+import com.example.rmp_front.data.models.Chat
 
 @Composable
 
 fun MiniChatInList(
     navController: NavHostController,
-    chat: ChatItem
+    chat: Chat
 ){
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { navController.navigate("chat/${chat.name}") }
+            .clickable { navController.navigate("chat/${chat.title}") }
             .padding(horizontal = 16.dp, vertical = 15.dp)
     ) {
         Box(
@@ -45,7 +45,7 @@ fun MiniChatInList(
         Spacer(modifier = Modifier.width(10.dp))
         Column {
             Text(
-                text = "${chat.name}",
+                text = "${chat.title}",
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.padding(start = 10.dp, top = 5.dp)

@@ -1,4 +1,4 @@
-package com.example.rmp_front.data
+package com.example.rmp_front.data.dto
 
 import kotlinx.serialization.Serializable
 
@@ -11,6 +11,7 @@ data class RegisterRequest(
 @Serializable
 data class RegisterResponse(
     val success: Boolean,
-    val token: String? = null,
-    val message: String? = null
+    val token: String ? = null,
+    val message: String? = null,
+    val user: UserDto ? = null
 )

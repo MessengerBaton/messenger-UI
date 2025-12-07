@@ -11,31 +11,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.rmp_front.viewmodel.ChatsViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.ExperimentalMaterial3Api
 import com.example.rmp_front.ui_component.components.AddButton
 import com.example.rmp_front.ui_component.components.CustomTextField
 import com.example.rmp_front.ui_component.components.MiniChatInList
+import com.example.rmp_front.viewmodel.chatsList.ChatsListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatsListScreen(navController: NavHostController) {
-    val viewModel: ChatsViewModel = viewModel()
+    val viewModel: ChatsListViewModel = viewModel()
     val chats by viewModel.chats.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
+
+    val error by viewModel.error.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     Scaffold(
 
         topBar = {
             TopAppBar(
-                title = { Text("Chats",
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = 30.sp,
-                    modifier = Modifier.padding(start = 10.dp)
-
-                ) },
+                title = {
+                    Text(
+                        "Chats",
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontSize = 30.sp,
+                        modifier = Modifier.padding(start = 10.dp)
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.primary
@@ -95,12 +100,15 @@ fun ChatsListScreen(navController: NavHostController) {
 //                    Text("СЕРВЕР")
 //                }
 
+
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.background)
                 ) {
-                    val filteredChats = chats.filter { it.name.contains(searchQuery, ignoreCase = true) }
+                    val filteredChats = chats.filter {
+                        it.title.contains(searchQuery, ignoreCase = true)
+                    }
 
                     items(filteredChats) { chat ->
                         MiniChatInList(

@@ -20,8 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import com.example.rmp_front.data.MessageModel
 import com.example.rmp_front.data.RetrofitClient
+import com.example.rmp_front.data.models.Message
 import com.example.rmp_front.ui_component.components.AddButton
 import com.example.rmp_front.ui_component.components.CustomTextField
 import com.example.rmp_front.ui_component.components.MessageCard
@@ -139,8 +139,8 @@ fun ChatScreen(chatId: String,
                             val time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
                             coroutineScope.launch {
                                 try {
-                                    val message = MessageModel(chatId = chatId, senderId = senderId, body = messageText)
-                                    val response: Response<MessageModel> = RetrofitClient.apiService.sendMessage(message)
+                                    val message = Message(chatId = chatId, senderId = senderId, text = messageText, id = chatId, timestamp = time)
+                                    val response: Response<Message> = RetrofitClient.apiService.sendMessage(message)
 
                                     if (response.isSuccessful) {
                                         messages.add(Pair("Отправлено: $messageText", time))

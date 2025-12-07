@@ -1,5 +1,11 @@
 package com.example.rmp_front.data
 
+import com.example.rmp_front.data.dto.ChatDto
+import com.example.rmp_front.data.dto.ChatListResponse
+import com.example.rmp_front.data.dto.LoginResponse
+import com.example.rmp_front.data.dto.MessageShortDto
+import com.example.rmp_front.data.dto.RegisterResponse
+import com.example.rmp_front.data.models.Message
 import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.engine.android.*
@@ -40,7 +46,7 @@ object ServerClient {
         }
     }
 
-    suspend fun getTemp(): List<MessageModel> {
+    suspend fun getTemp(): List<Message> {
         return http.get("${BASE}/data-test").body()
     }
 
@@ -58,4 +64,25 @@ object ServerClient {
             success = true,
         )
     }
+
+
+    // пока заглушка
+    suspend fun getChats(): ChatListResponse {
+        return ChatListResponse(
+            chats = listOf(
+                ChatDto(
+                    id = "1",
+                    title = "Murrr",
+                    lastMessage = MessageShortDto(
+                        id = "m1",
+                        senderId = "1",
+                        text = "Привет!",
+                        timestamp = "22:50"
+                    ),
+                    avatarUrl = null
+                )
+            )
+        )
+    }
+
 }

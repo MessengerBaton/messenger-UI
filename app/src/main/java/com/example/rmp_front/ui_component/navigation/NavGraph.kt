@@ -13,7 +13,7 @@ import com.example.rmp_front.ui_component.screens.LoginScreen
 import com.example.rmp_front.ui_component.screens.MyProfileScreen
 import com.example.rmp_front.ui_component.screens.RegisterScreen
 import com.example.rmp_front.ui_component.screens.SettingsScreen
-import com.example.rmp_front.ui_component.screens.TmpScreen
+//import com.example.rmp_front.ui_component.screens.TmpScreen
 
 object Routes {
 
@@ -26,7 +26,7 @@ object Routes {
     const val LOGIN = "login"
     const val REGISTER = "register"
 
-    const val TMP = "tmp" // тест подключения к серверу
+//    const val TMP = "tmp" // тест подключения к серверу
 }
 
 @Composable
@@ -48,9 +48,9 @@ fun NavGraph(
             val chatId = backStackEntry.arguments?.getString("chatId") ?: "chat_1"
             ChatScreen(chatId = chatId, navController = navController)
         }
-        composable(Routes.TMP) {
-            TmpScreen(navController = navController)
-        }
+//        composable(Routes.TMP) {
+//            TmpScreen(navController = navController)
+//        }
         composable(Routes.PROFILE) {
             MyProfileScreen(navController = navController)
         }
