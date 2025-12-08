@@ -21,15 +21,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
 import com.example.rmp_front.ui_component.components.SettingsItem
 import com.example.rmp_front.ui_component.navigation.Routes
+import com.example.rmp_front.viewmodel.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyProfileScreen(navController: NavController) {
-    var profileImage by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("Kitty") }
-    var username by remember { mutableStateOf("@super_kitty") }
-    var phoneNumber by remember { mutableStateOf("89226593565") }
-    var status by remember { mutableStateOf("hi i'm Kitty") }
+fun MyProfileScreen(navController: NavController, mainViewModel: MainViewModel) {
+
+    val user by mainViewModel.user.collectAsState()
 
     Column (
         modifier = Modifier
@@ -80,7 +78,7 @@ fun MyProfileScreen(navController: NavController) {
 
             ) {
                 Text(
-                    text = name,
+                    text = user!!.name,
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
@@ -88,7 +86,7 @@ fun MyProfileScreen(navController: NavController) {
 
                 )
                 Text(
-                    text = username,
+                    text = user!!.nick,
                     color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 16.sp
                 )
@@ -106,7 +104,7 @@ fun MyProfileScreen(navController: NavController) {
                 fontSize = 14.sp,
                 modifier = Modifier.padding(start = 30.dp)
             )
-            SettingsItem(text = phoneNumber, type = "none", subtitle = "")
+            SettingsItem(text = user!!.phone, type = "none", subtitle = "")
 
             Text(
                 text = "Kitty info",
@@ -114,7 +112,7 @@ fun MyProfileScreen(navController: NavController) {
                 fontSize = 14.sp,
                 modifier = Modifier.padding(start = 30.dp)
             )
-            SettingsItem(text = status, type = "none", subtitle = "")
+            SettingsItem(text = user?.about ?: "", type = "none", subtitle = "")
         }
     }
 }

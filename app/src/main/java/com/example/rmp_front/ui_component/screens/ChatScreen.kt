@@ -20,12 +20,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.rmp_front.data.RetrofitClient
+import com.example.rmp_front.data.dto.MessageDto
 import com.example.rmp_front.data.models.Message
 import com.example.rmp_front.ui_component.components.AddButton
 import com.example.rmp_front.ui_component.components.CustomTextField
 import com.example.rmp_front.ui_component.components.MessageCard
 import com.example.rmp_front.ui_component.navigation.Routes
+import com.example.rmp_front.viewmodel.chat.ChatViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.text.SimpleDateFormat
@@ -33,18 +36,23 @@ import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(chatId: String,
-               navController: NavHostController,
-
-) {
-    var senderId by remember { mutableStateOf("user_1") }
+fun ChatScreen(chatId: String, navController: NavHostController) {
+//    var senderId by remember { mutableStateOf("user_1") }
     var messageText by remember { mutableStateOf("") }
-    val messages = remember { mutableStateListOf<Pair<String, String>>() }
+//    val messages = remember { mutableStateListOf<Pair<String, String>>() }
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
     var expanded by remember { mutableStateOf(false) }
 
+    val viewModel: ChatViewModel = viewModel()
 
+    val chatInfo by viewModel.chat.collectAsState()
+
+    val messages by viewModel.message.collectAsState()
+
+    LaunchedEffect(chatId){
+        viewModel.loadChat(chatId)
+    }
 
 
     Scaffold(
@@ -66,11 +74,11 @@ fun ChatScreen(chatId: String,
                             }
 
                         Text(
-                            text = "$chatId",
+                            text = chatInfo?.title ?: "",
                             color = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier
                                 .weight(1f)
-                                .clickable {navController.navigate(Routes.FRIEND_PROFILE)},
+                                .clickable {navController.navigate("friend_profile/${chatInfo?.userId}")},
                             textAlign = TextAlign.Center,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -137,22 +145,31 @@ fun ChatScreen(chatId: String,
                     onClick = {
                         if (messageText.isNotEmpty()) {
                             val time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-                            coroutineScope.launch {
-                                try {
-                                    val message = Message(chatId = chatId, senderId = senderId, text = messageText, id = chatId, timestamp = time)
-                                    val response: Response<Message> = RetrofitClient.apiService.sendMessage(message)
 
-                                    if (response.isSuccessful) {
-                                        messages.add(Pair("Отправлено: $messageText", time))
-                                        coroutineScope.launch { listState.scrollToItem(messages.size - 1) }
-                                    } else {
-                                        messages.add(Pair("Ошибка: ${response.code()}", time))
-                                    }
-                                } catch (e: Exception) {
-                                    messages.add(Pair("Ошибка сети: ${e.message}", time))
-                                }
-                                messageText = ""
-                            }
+                            val message = Message(
+                                id = UUID.randomUUID().toString(),
+                                chatId = chatId,
+                                timestamp = time,
+                                text = messageText,
+                                isFromMe = true
+                            )
+
+//                            coroutineScope.launch {
+//                                try {
+//                                    val response: Response<Message> = RetrofitClient.apiService.sendMessage(message)
+//
+//                                    if (response.isSuccessful) {
+//                                        messages.add(Pair("Отправлено: $messageText", time))
+//                                        coroutineScope.launch { listState.scrollToItem(messages.size - 1) }
+//                                    } else {
+//                                        messages.add(Pair("Ошибка: ${response.code()}", time))
+//                                    }
+//                                } catch (e: Exception) {
+//                                    messages.add(Pair("Ошибка сети: ${e.message}", time))
+//                                }
+                            viewModel.sendMessage(message)
+                            messageText = ""
+//                            }
                         }
                     },
                     modifier = Modifier.padding(0.dp),
@@ -180,7 +197,7 @@ fun ChatScreen(chatId: String,
             contentPadding = PaddingValues(bottom = 8.dp),
         ) {
             items(messages) { message ->
-                MessageCard(message.first, message.second, true)
+                MessageCard(message.text, message.timestamp, message.isFromMe)
             }
         }
     }

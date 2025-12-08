@@ -7,17 +7,18 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ChatDto(
     val id: String,
+    val userId: String,
     val title: String,
-    val lastMessage: MessageShortDto,
+    val lastMessage: MessageDto,
     val avatarUrl: String?,
 )
 
 @Serializable
-data class MessageShortDto(
+data class ChatInfoDto(
     val id: String,
-    val senderId: String,
-    val text: String,
-    val timestamp: String
+    val userId: String,
+    val title: String,
+    val avatarUrl: String?,
 )
 
 
@@ -29,15 +30,17 @@ data class ChatListResponse(
 
 fun ChatDto.toDomain() = Chat(
     id = id,
+    userId = userId,
     title = title,
     lastMessage = lastMessage.toDomain().text,
     timestamp = lastMessage.toDomain().timestamp,
     avatarUrl = avatarUrl
 )
 
-fun MessageShortDto.toDomain() = Message(
+
+fun ChatInfoDto.toDomain() = Chat(
     id = id,
-    senderId = senderId,
-    text = text,
-    timestamp = timestamp
+    userId = userId,
+    title = title,
+    avatarUrl = avatarUrl
 )

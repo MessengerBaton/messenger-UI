@@ -14,18 +14,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.rmp_front.ui_component.components.SettingsItem
+import com.example.rmp_front.viewmodel.friend.FriendViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FriendProfileScreen(navController: NavController) {
-    var profileImage by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("Kitty") }
-    var username by remember { mutableStateOf("@super_kitty") }
-    var phoneNumber by remember { mutableStateOf("89226593565") }
-    var status by remember { mutableStateOf("hi i'm Kitty") }
+fun FriendProfileScreen(userId: String, navController: NavController) {
+
+//    var profileImage by remember { mutableStateOf("") }
+//    var name by remember { mutableStateOf("Kitty") }
+//    var username by remember { mutableStateOf("@super_kitty") }
+//    var phoneNumber by remember { mutableStateOf("89226593565") }
+//    var status by remember { mutableStateOf("hi i'm Kitty") }
     var selectedTab by remember { mutableStateOf(0) }
+
+    val viewModel: FriendViewModel = viewModel()
+    val friend by viewModel.friend.collectAsState()
+
+    LaunchedEffect(userId){
+        viewModel.loadFriend(userId)
+    }
 
     Column (
         modifier = Modifier
@@ -76,7 +86,7 @@ fun FriendProfileScreen(navController: NavController) {
 
             ) {
                 Text(
-                    text = username,
+                    text = friend?.nick ?: "",
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 16.sp,
                     modifier = Modifier.align(Alignment.CenterStart)
@@ -135,7 +145,7 @@ fun FriendProfileScreen(navController: NavController) {
                 fontSize = 12.sp,
                 modifier = Modifier.padding(start = 20.dp)
             )
-            SettingsItem(text = name, type = "none", subtitle = "")
+            SettingsItem(text = friend?.name ?: "", type = "none", subtitle = "")
 
             Text(
                 text = "Kitty number",
@@ -143,7 +153,7 @@ fun FriendProfileScreen(navController: NavController) {
                 fontSize = 12.sp,
                 modifier = Modifier.padding(start = 20.dp)
             )
-            SettingsItem(text = phoneNumber, type = "none", subtitle = "")
+            SettingsItem(text = friend?.phone ?: "", type = "none", subtitle = "")
 
             Text(
                 text = "Kitty info",
@@ -151,7 +161,7 @@ fun FriendProfileScreen(navController: NavController) {
                 fontSize = 12.sp,
                 modifier = Modifier.padding(start = 20.dp)
             )
-            SettingsItem(text = status, type = "none", subtitle = "")
+            SettingsItem(text = friend?.about ?: "", type = "none", subtitle = "")
         }
 
 

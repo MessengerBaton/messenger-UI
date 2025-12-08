@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.rmp_front.ui_component.screens.ChangeProfileScreen
 import com.example.rmp_front.ui_component.screens.ChatScreen
 import com.example.rmp_front.ui_component.screens.ChatsListScreen
@@ -13,6 +14,8 @@ import com.example.rmp_front.ui_component.screens.LoginScreen
 import com.example.rmp_front.ui_component.screens.MyProfileScreen
 import com.example.rmp_front.ui_component.screens.RegisterScreen
 import com.example.rmp_front.ui_component.screens.SettingsScreen
+import com.example.rmp_front.viewmodel.MainViewModel
+
 //import com.example.rmp_front.ui_component.screens.TmpScreen
 
 object Routes {
@@ -22,7 +25,7 @@ object Routes {
     const val CHATS_LIST = "chats_list"
     const val CHAT = "chat/{chatId}"
     const val CHANGE_PROFILE = "change_profile"
-    const val FRIEND_PROFILE = "friend_profile"
+    const val FRIEND_PROFILE = "friend_profile/{userId}"
     const val LOGIN = "login"
     const val REGISTER = "register"
 
@@ -35,6 +38,7 @@ fun NavGraph(
     modifier: Modifier = Modifier,
     darkTheme: Boolean,
     onThemeChange: (Boolean) -> Unit,
+    mainViewModel: MainViewModel
 
     ) {
     NavHost(navController = navController, startDestination = Routes.LOGIN) {
@@ -44,15 +48,21 @@ fun NavGraph(
         composable(Routes.CHATS_LIST) {
             ChatsListScreen(navController = navController)
         }
-        composable(Routes.CHAT) { backStackEntry ->
-            val chatId = backStackEntry.arguments?.getString("chatId") ?: "chat_1"
+        composable(
+            route = Routes.CHAT,
+            arguments = listOf(
+                navArgument("chatId") { defaultValue = "" }
+            )
+        ) { backStackEntry ->
+            val chatId = backStackEntry.arguments?.getString("chatId")!!
             ChatScreen(chatId = chatId, navController = navController)
         }
+
 //        composable(Routes.TMP) {
 //            TmpScreen(navController = navController)
 //        }
         composable(Routes.PROFILE) {
-            MyProfileScreen(navController = navController)
+            MyProfileScreen(navController = navController, mainViewModel = mainViewModel)
         }
         composable(Routes.SETTINGS) {
             SettingsScreen(
@@ -64,8 +74,14 @@ fun NavGraph(
         composable(Routes.CHANGE_PROFILE){
             ChangeProfileScreen(navController = navController)
         }
-        composable(Routes.FRIEND_PROFILE){
-            FriendProfileScreen(navController = navController)
+        composable(
+            route = Routes.FRIEND_PROFILE,
+            arguments = listOf(
+                navArgument("userId") { defaultValue = "" }
+            )
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId")!!
+            FriendProfileScreen(userId = userId, navController = navController)
         }
         composable(Routes.REGISTER){
             RegisterScreen(navController = navController)

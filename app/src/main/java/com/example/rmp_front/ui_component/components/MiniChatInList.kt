@@ -32,7 +32,7 @@ fun MiniChatInList(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { navController.navigate("chat/${chat.title}") }
+            .clickable { navController.navigate("chat/${chat.id}") }
             .padding(horizontal = 16.dp, vertical = 15.dp)
     ) {
         Box(
@@ -45,14 +45,14 @@ fun MiniChatInList(
         Spacer(modifier = Modifier.width(10.dp))
         Column {
             Text(
-                text = "${chat.title}",
+                text = chat.title,
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.padding(start = 10.dp, top = 5.dp)
             )
 
             Text(
-                text = "last message",
+                text = chat?.lastMessage ?: "",
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier.padding(start = 10.dp, top = 15.dp)
@@ -60,7 +60,7 @@ fun MiniChatInList(
 
         }
         Text(
-            text = "14:88",
+            text = chat?.timestamp ?: "",
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSecondary,
             modifier = Modifier.padding(start = 180.dp, top = 10.dp)

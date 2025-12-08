@@ -1,5 +1,7 @@
 package com.example.rmp_front.data.dto
 
+import com.example.rmp_front.data.models.Chat
+import com.example.rmp_front.data.models.User
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -13,3 +15,11 @@ data class UserDto(
 )
 
 
+fun UserDto.toDomain() = User(
+    id = id,
+    name = name,
+    nick = nickname,
+    phone = phone,
+    about = about,
+    avatarUrl = avatarUrl
+)

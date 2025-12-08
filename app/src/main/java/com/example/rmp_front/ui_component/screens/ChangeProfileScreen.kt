@@ -1,5 +1,6 @@
 package com.example.rmp_front.ui_component.screens
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,8 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.rmp_front.ui_component.components.ChangeItem
+import com.example.rmp_front.viewmodel.MainViewModel
+import com.example.rmp_front.viewmodel.user.ChangeProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,8 +29,22 @@ fun ChangeProfileScreen(navController: NavController) {
     var username by remember { mutableStateOf("@super_kitty") }
     var phoneNumber by remember { mutableStateOf("89222659356") }
     var status by remember { mutableStateOf("hi i'm Kitty") }
-    var birthday by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
+
+    val viewModel: ChangeProfileViewModel = viewModel()
+    val mainViewModel: MainViewModel = viewModel(LocalContext.current as ComponentActivity)
+    val updateSuccess by viewModel.updateSuccess.collectAsState()
+
+
+    val user by viewModel.user.collectAsState()
+
+    LaunchedEffect(updateSuccess) {
+        if (updateSuccess) {
+            mainViewModel.loadUser()
+            navController.popBackStack()
+        }
+    }
+
 
     Column(
         modifier = Modifier
@@ -93,7 +112,18 @@ fun ChangeProfileScreen(navController: NavController) {
             Box(
                 modifier = Modifier.padding(end = 16.dp, top = 16.dp)
                     .align(Alignment.TopEnd)
-                    .clickable {navController.popBackStack()}
+                    .clickable {
+                        val updatedUser = user?.copy(
+                            name = name,
+                            nick = username,
+                            phone = phoneNumber,
+                            about = status,
+                            avatarUrl = profileImage
+                        ) ?: return@clickable
+
+                        viewModel.updateUser(updatedUser)
+
+                    }
 
             ) {
                 Text(
@@ -122,9 +152,9 @@ fun ChangeProfileScreen(navController: NavController) {
             onValueChange = { status = it },
             text = "Kitty info")
 
-        ChangeItem(value = birthday,
-            onValueChange = { birthday = it },
-            text = "Kitty birthday")
+//        ChangeItem(value = birthday,
+//            onValueChange = { birthday = it },
+//            text = "Kitty birthday")
 
     }
 }

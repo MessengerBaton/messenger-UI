@@ -1,15 +1,23 @@
 package com.example.rmp_front.data.models
 
-import kotlinx.serialization.Serializable
+import com.example.rmp_front.data.dto.MessageDto
 
-@Serializable
+
 data class Message(
     val id: String,
     val text: String,
-    val senderId: String,
-    val chatId: String? = null,
+    val chatId: String,
     val timestamp: String,
     val replyToId: String? = null,
-    val isFromMe: Boolean? = null,
-    val isRead: Boolean = false
+    val isFromMe: Boolean,
+    val isRead: Boolean? = false
+)
+
+fun Message.toDto() = MessageDto (
+    id = id,
+    chatId = chatId,
+    text = text,
+
+    isFromMe = isFromMe,
+    timestamp = timestamp
 )

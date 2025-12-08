@@ -23,27 +23,27 @@ import androidx.compose.ui.unit.dp
 fun MessageCard(
     text: String,
     time: String,
-    isOwn: Boolean
+    isFromMe: Boolean
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 6.dp),
-        horizontalArrangement = if (isOwn) Arrangement.End else Arrangement.Start
+        horizontalArrangement = if (isFromMe) Arrangement.End else Arrangement.Start
     ) {
         Column(
             modifier = Modifier
                 .wrapContentWidth()
                 .widthIn(max = 280.dp)
                 .background(
-                    if (isOwn) MaterialTheme.colorScheme.primary else Color(0xFFE5E5EA),
+                    if (isFromMe) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary,
                     shape = MaterialTheme.shapes.medium
                 )
                 .padding(10.dp)
         ) {
             Text(
                 text = text,
-                color = if (isOwn) Color.White else Color.Black
+                color = MaterialTheme.colorScheme.onPrimary
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -53,7 +53,7 @@ fun MessageCard(
             ) {
                 Text(
                     text = time,
-                    color = if (isOwn) Color.White.copy(0.7f) else Color.Gray,
+                    color = if (isFromMe) Color.White.copy(0.7f) else Color.Gray,
                     fontSize = MaterialTheme.typography.labelSmall.fontSize
                 )
             }
