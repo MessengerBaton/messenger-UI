@@ -1,0 +1,160 @@
+package com.example.rmp_front.ui_component.screens
+
+import androidx.activity.ComponentActivity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.rmp_front.ui_component.components.ChangeItem
+import com.example.rmp_front.viewmodel.MainViewModel
+import com.example.rmp_front.viewmodel.user.ChangeProfileViewModel
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ChangeProfileScreen(navController: NavController) {
+    var profileImage by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("Kitty") }
+    var username by remember { mutableStateOf("@super_kitty") }
+    var phoneNumber by remember { mutableStateOf("89222659356") }
+    var status by remember { mutableStateOf("hi i'm Kitty") }
+    var expanded by remember { mutableStateOf(false) }
+
+    val viewModel: ChangeProfileViewModel = viewModel()
+    val mainViewModel: MainViewModel = viewModel(LocalContext.current as ComponentActivity)
+    val updateSuccess by viewModel.updateSuccess.collectAsState()
+
+
+    val user by viewModel.user.collectAsState()
+
+    LaunchedEffect(updateSuccess) {
+        if (updateSuccess) {
+            mainViewModel.loadUser()
+            navController.popBackStack()
+        }
+    }
+
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 30.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row {
+                Box(
+                    modifier = Modifier
+                        .padding(top = 30.dp)
+                        .size(240.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary)
+                )
+                Box(
+                    modifier = Modifier
+                        .clickable { expanded = true }
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary)
+                        .align ( Alignment.Bottom ),
+
+                ){
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Change photo", color = MaterialTheme.colorScheme.onPrimary) },
+                            onClick = {
+                                expanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Delete photo", color = MaterialTheme.colorScheme.onPrimary) },
+                            onClick = {
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+            }
+            Box(
+                modifier = Modifier.padding(end = 16.dp, top = 10.dp)
+                    .align(Alignment.TopStart)
+                    .clickable {  }
+            ) {
+                IconButton(onClick = {navController.popBackStack() },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
+
+            Box(
+                modifier = Modifier.padding(end = 16.dp, top = 16.dp)
+                    .align(Alignment.TopEnd)
+                    .clickable {
+                        val updatedUser = user?.copy(
+                            name = name,
+                            nick = username,
+                            phone = phoneNumber,
+                            about = status,
+                            avatarUrl = profileImage
+                        ) ?: return@clickable
+
+                        viewModel.updateUser(updatedUser)
+
+                    }
+
+            ) {
+                Text(
+                    text = "Save",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
+                        .padding(10.dp)
+                )
+            }
+        }
+
+        ChangeItem(value = name,
+            onValueChange = { name = it },
+            text = "Kitty name",)
+
+        ChangeItem(value = username,
+            onValueChange = { username = it },
+            text = "Kitty nickname",)
+
+        ChangeItem(value = phoneNumber,
+            onValueChange = { phoneNumber = it },
+            text = "Kitty number")
+
+        ChangeItem(value = status,
+            onValueChange = { status = it },
+            text = "Kitty info")
+
+//        ChangeItem(value = birthday,
+//            onValueChange = { birthday = it },
+//            text = "Kitty birthday")
+
+    }
+}
