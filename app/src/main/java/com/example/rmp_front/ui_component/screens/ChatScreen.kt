@@ -1,30 +1,34 @@
 package com.example.rmp_front.ui_component.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.ui.draw.clip
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import com.example.rmp_front.AppColors
-import com.example.rmp_front.data.MessageModel
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.rmp_front.data.RetrofitClient
+import com.example.rmp_front.data.dto.MessageDto
+import com.example.rmp_front.data.models.Message
+import com.example.rmp_front.ui_component.components.AddButton
+import com.example.rmp_front.ui_component.components.CustomTextField
 import com.example.rmp_front.ui_component.components.MessageCard
+import com.example.rmp_front.ui_component.navigation.Routes
+import com.example.rmp_front.viewmodel.chat.ChatViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.text.SimpleDateFormat
@@ -33,81 +37,150 @@ import java.util.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(chatId: String, navController: NavHostController) {
-    var senderId by remember { mutableStateOf("user_1") }
+//    var senderId by remember { mutableStateOf("user_1") }
     var messageText by remember { mutableStateOf("") }
-    val messages = remember { mutableStateListOf<Pair<String, String>>() }
+//    val messages = remember { mutableStateListOf<Pair<String, String>>() }
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    var expanded by remember { mutableStateOf(false) }
+
+    val viewModel: ChatViewModel = viewModel()
+
+    val chatInfo by viewModel.chat.collectAsState()
+
+    val messages by viewModel.message.collectAsState()
+
+    LaunchedEffect(chatId){
+        viewModel.loadChat(chatId)
+    }
+
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Chat: $chatId") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = AppColors.TopBar),
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }){
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint = AppColors.TextPrimary)
+                title = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+
+                            IconButton(onClick = { navController.popBackStack() },
+                              ) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = "Back",
+                                    tint = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
+
+                        Text(
+                            text = chatInfo?.title ?: "",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable {navController.navigate("friend_profile/${chatInfo?.userId}")},
+                            textAlign = TextAlign.Center,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .padding(end = 30.dp)
+                                .size(44.dp)
+                                .background(Color.Gray.copy(alpha = 0.5f), shape = CircleShape)
+                                .clickable {navController.navigate(Routes.FRIEND_PROFILE)},
+                        )
+
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
             )
         },
         bottomBar = {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(AppColors.TopBar)
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .background(MaterialTheme.colorScheme.primary)
+                    .height(60.dp)
             ) {
-                TextField(
+                AddButton(
+                    modifier = Modifier
+                        .padding(start = 5.dp, top = 2.dp),
+                    onClick = { expanded = true }
+
+                )
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.background(MaterialTheme.colorScheme.background)
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Добавить фото", color = MaterialTheme.colorScheme.onPrimary) },
+                        onClick = {
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Добавить видео", color = MaterialTheme.colorScheme.onPrimary) },
+                        onClick = {
+                            expanded = false
+                        }
+                    )
+                }
+
+                CustomTextField(
+                    icon = false,
+                    placeHolder = "Type here",
                     value = messageText,
                     onValueChange = { messageText = it },
                     modifier = Modifier
-                        .weight(0.8f)
-                        .clip(RoundedCornerShape(32.dp))
-                        .background(AppColors.InputBackground)
-                        .padding(horizontal = 4.dp, vertical = 2.dp),
-                    placeholder = { Text("Type here", color = AppColors.PlaceholderText) },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = AppColors.InputBackground,
-                        unfocusedContainerColor = AppColors.InputBackground,
-                        focusedTextColor = AppColors.TextPrimary,
-                        unfocusedTextColor = AppColors.TextPrimary
-                    ),
-                    keyboardOptions = KeyboardOptions.Default,
-                    keyboardActions = KeyboardActions(onDone = { /* Обработка Enter */ })
+                        .background(MaterialTheme.colorScheme.primary)
+                        .width(290.dp)
+                        .padding(vertical = 6.dp)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+
                 Button(
                     onClick = {
                         if (messageText.isNotEmpty()) {
                             val time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-                            coroutineScope.launch {
-                                try {
-                                    val message = MessageModel(chatId = chatId, senderId = senderId, body = messageText)
-                                    val response: Response<MessageModel> = RetrofitClient.apiService.sendMessage(message)
-                                    if (response.isSuccessful) {
-                                        messages.add(Pair("Отправлено: $messageText", time))
-                                        coroutineScope.launch { listState.scrollToItem(messages.size - 1) }
-                                    } else {
-                                        messages.add(Pair("Ошибка: ${response.code()}", time))
-                                    }
-                                } catch (e: Exception) {
-                                    messages.add(Pair("Ошибка сети: ${e.message}", time))
-                                }
-                                messageText = ""
-                            }
+
+                            val message = Message(
+                                id = UUID.randomUUID().toString(),
+                                chatId = chatId,
+                                timestamp = time,
+                                text = messageText,
+                                isFromMe = true
+                            )
+
+//                            coroutineScope.launch {
+//                                try {
+//                                    val response: Response<Message> = RetrofitClient.apiService.sendMessage(message)
+//
+//                                    if (response.isSuccessful) {
+//                                        messages.add(Pair("Отправлено: $messageText", time))
+//                                        coroutineScope.launch { listState.scrollToItem(messages.size - 1) }
+//                                    } else {
+//                                        messages.add(Pair("Ошибка: ${response.code()}", time))
+//                                    }
+//                                } catch (e: Exception) {
+//                                    messages.add(Pair("Ошибка сети: ${e.message}", time))
+//                                }
+                            viewModel.sendMessage(message)
+                            messageText = ""
+//                            }
                         }
                     },
-                    modifier = Modifier.size(40.dp),
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A2A2A))
+                    modifier = Modifier.padding(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowUpward,
+                        imageVector = Icons.Default.Send,
                         contentDescription = "Send",
-                        tint = AppColors.TextPrimary
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(20.dp)
+
                     )
                 }
             }
@@ -118,11 +191,13 @@ fun ChatScreen(chatId: String, navController: NavHostController) {
                 .fillMaxSize()
                 .padding(padding)
                 .focusable()
-                .background(AppColors.Background),
-            state = listState
+                .background(MaterialTheme.colorScheme.background),
+            state = listState,
+            reverseLayout = false,
+            contentPadding = PaddingValues(bottom = 8.dp),
         ) {
             items(messages) { message ->
-                MessageCard(message.first, message.second)
+                MessageCard(message.text, message.timestamp, message.isFromMe)
             }
         }
     }
