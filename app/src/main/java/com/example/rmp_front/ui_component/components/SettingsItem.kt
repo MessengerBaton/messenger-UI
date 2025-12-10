@@ -27,7 +27,8 @@ import com.example.rmp_front.ui.theme.LocalAppState
 fun SettingsItem(
     text: String,
     type: String,
-    subtitle: String
+    subtitle: String,
+    onClick: (() -> Unit)? = null
 ) {
     val appState = LocalAppState.current
     var isChecked by remember { mutableStateOf(false) }
@@ -35,8 +36,8 @@ fun SettingsItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 10.dp, horizontal = 10.dp)
-            .clickable { /* навигация */ },
-        shape = RoundedCornerShape(12.dp),
+            .clickable { onClick?.invoke() },
+        shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
     ) {
         Row(
@@ -45,7 +46,6 @@ fun SettingsItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             if (type == "default") {
                 Text(
                     text = text,

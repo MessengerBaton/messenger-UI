@@ -33,7 +33,7 @@ fun AppToast(
                 .wrapContentHeight()
                 .background(
                     MaterialTheme.colorScheme.error,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(18.dp)
                 )
                 .then(modifier),
             contentAlignment = Alignment.Center

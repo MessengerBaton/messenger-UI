@@ -19,19 +19,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 @Composable
 fun Switcher(
     text: String,
-    darkTheme: Boolean,
-    onThemeChange: (Boolean) -> Unit
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 10.dp, horizontal = 10.dp)
-            .clickable { /* навигация */ },
-        shape = RoundedCornerShape(12.dp),
+            .clickable {
+                onCheckedChange(!isChecked) // При клике на всю карточку переключаем состояние
+            },
+        shape = RoundedCornerShape(24.dp), // Используем те же скругления, что и у SettingsItem
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
     ) {
         Row(
@@ -40,7 +41,6 @@ fun Switcher(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Text(
                 text = text,
                 color = MaterialTheme.colorScheme.onPrimary,
@@ -49,8 +49,8 @@ fun Switcher(
                     .padding(start = 8.dp)
             )
             Switch(
-                checked = darkTheme,
-                onCheckedChange = { onThemeChange(it) },
+                checked = isChecked,
+                onCheckedChange = { onCheckedChange(it) },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White,
                     uncheckedThumbColor = Color.Gray,
@@ -58,9 +58,7 @@ fun Switcher(
                     uncheckedTrackColor = MaterialTheme.colorScheme.background
                 ),
                 modifier = Modifier
-                    .size(20.dp)
-                    .padding(end = 20.dp)
-
+                    .size(width = 48.dp, height = 24.dp)
             )
         }
     }
