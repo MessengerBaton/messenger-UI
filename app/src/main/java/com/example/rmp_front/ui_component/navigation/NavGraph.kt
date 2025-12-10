@@ -72,7 +72,7 @@ fun NavGraph(
                 )
         }
         composable(Routes.CHANGE_PROFILE){
-            ChangeProfileScreen(navController = navController)
+            ChangeProfileScreen(navController = navController,  mainViewModel = mainViewModel)
         }
         composable(
             route = Routes.FRIEND_PROFILE,
