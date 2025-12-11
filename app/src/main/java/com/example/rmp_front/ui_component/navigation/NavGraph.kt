@@ -13,14 +13,16 @@ import com.example.rmp_front.ui_component.screens.FriendProfileScreen
 import com.example.rmp_front.ui_component.screens.LoginScreen
 import com.example.rmp_front.ui_component.screens.MyProfileScreen
 import com.example.rmp_front.ui_component.screens.RegisterScreen
-import com.example.rmp_front.ui_component.screens.SettingsScreen
 import com.example.rmp_front.viewmodel.MainViewModel
+import com.example.rmp_front.ui_component.screens.settings_screens.*
 
 //import com.example.rmp_front.ui_component.screens.TmpScreen
 
 object Routes {
 
     const val SETTINGS = "settings"
+    const val NOTIFICATIONS = "notifications"
+    const val PRIVACY_SECURITY = "privacy_security"
     const val PROFILE = "profile"
     const val CHATS_LIST = "chats_list"
     const val CHAT = "chat/{chatId}"
@@ -70,6 +72,12 @@ fun NavGraph(
                 darkTheme = darkTheme,
                 onThemeChange = onThemeChange
                 )
+        }
+        composable(Routes.NOTIFICATIONS) {
+            NotificationsScreen(navController = navController)
+        }
+        composable(Routes.PRIVACY_SECURITY) {
+            PrivacySecurityScreen(navController = navController)
         }
         composable(Routes.CHANGE_PROFILE){
             ChangeProfileScreen(navController = navController)

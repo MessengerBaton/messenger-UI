@@ -99,7 +99,7 @@ fun RegisterScreen(navController: NavController) {
                         cursorColor = MaterialTheme.colorScheme.onPrimary,
                     ),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(18.dp),
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -141,7 +141,7 @@ fun RegisterScreen(navController: NavController) {
                         cursorColor = MaterialTheme.colorScheme.onPrimary,
                     ),
                     visualTransformation = PasswordVisualTransformation(),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(18.dp),
                     modifier = Modifier.fillMaxWidth()
                 )
 

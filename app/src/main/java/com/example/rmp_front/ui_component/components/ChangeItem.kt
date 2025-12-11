@@ -46,7 +46,7 @@ fun ChangeItem(
                 focusedBorderColor = MaterialTheme.colorScheme.onSecondary,
             ),
             textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(18.dp)
         )
     }
 
