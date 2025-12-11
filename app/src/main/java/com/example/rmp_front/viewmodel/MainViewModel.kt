@@ -24,7 +24,9 @@ class MainViewModel : ViewModel() {
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
-
+    fun updateUser(newUser: User) {
+        _user.value = newUser
+    }
 
     fun loadUser() {
         viewModelScope.launch {

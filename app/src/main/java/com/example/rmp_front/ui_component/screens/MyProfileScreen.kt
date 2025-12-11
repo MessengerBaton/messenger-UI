@@ -1,9 +1,12 @@
 package com.example.rmp_front.ui_component.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,9 +19,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.rmp_front.ui_component.components.SettingsItem
 import com.example.rmp_front.ui_component.navigation.Routes
 import com.example.rmp_front.viewmodel.MainViewModel
@@ -29,7 +33,7 @@ fun MyProfileScreen(navController: NavController, mainViewModel: MainViewModel) 
 
     val user by mainViewModel.user.collectAsState()
 
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
@@ -37,89 +41,111 @@ fun MyProfileScreen(navController: NavController, mainViewModel: MainViewModel) 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 30.dp),
-            contentAlignment = Alignment.Center
+                .height(400.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(400.dp)
-                    .clip(RectangleShape)
-                    .background(MaterialTheme.colorScheme.primary)
-            )
-            Box(
-                modifier = Modifier.padding(end = 16.dp, top = 16.dp)
-                    .align(Alignment.TopEnd)
-                .clickable {
-                    navController.navigate(Routes.CHANGE_PROFILE)
+            when {
+                !user?.avatarUrl.isNullOrEmpty() -> {
+                    Image(
+                        painter = rememberAsyncImagePainter(user?.avatarUrl),
+                        contentDescription = "Profile",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(400.dp),
+                        contentScale = ContentScale.Crop
+                    )
                 }
-            ) {
-                Text(
-                    text = "Change",
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.background.copy(alpha = 0.45f), shape = CircleShape)
-                        .padding(10.dp)
-                )
+                else -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(400.dp)
+                            .background(MaterialTheme.colorScheme.primary),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Person,
+                            "Profile",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(100.dp)
+                        )
+                    }
+                }
             }
-            // Блюр
+
             GradientBlurOverlay(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp)
                     .align(Alignment.BottomStart)
             )
-            Column(
+
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 50.dp, bottom = 14.dp)
-                    .align(Alignment.BottomStart)
-
-
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
             ) {
                 Text(
-                    text = user!!.name,
+                    text = "Change",
                     color = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 10.dp)
-
-                )
-                Text(
-                    text = user!!.nick,
-                    color = MaterialTheme.colorScheme.onSecondary,
-                    fontSize = 16.sp
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colorScheme.background.copy(alpha = 0.7f),
+                            shape = CircleShape
+                        )
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .clickable {
+                            navController.navigate(Routes.CHANGE_PROFILE)
+                        }
                 )
             }
 
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(start = 30.dp, bottom = 20.dp)
+            ) {
+                Text(
+                    text = user?.name ?: "Kitty",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Text(
+                    text = user?.nick ?: "@super_kitty",
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    fontSize = 18.sp
+                )
+            }
         }
 
+        Spacer(modifier = Modifier.height(30.dp))
 
-        Column(modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 40.dp, vertical = 15.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 30.dp)
         ) {
             Text(
                 text = "Kitty number",
                 color = MaterialTheme.colorScheme.onSecondary,
                 fontSize = 14.sp,
-                modifier = Modifier.padding(start = 30.dp)
+                modifier = Modifier.padding(start = 10.dp, bottom = 8.dp)
             )
-            SettingsItem(text = user!!.phone, type = "none", subtitle = "")
+            SettingsItem(text = user?.phone ?: "89888888888", type = "none", subtitle = "")
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = "Kitty info",
-                color =MaterialTheme.colorScheme.onSecondary,
+                color = MaterialTheme.colorScheme.onSecondary,
                 fontSize = 14.sp,
-                modifier = Modifier.padding(start = 30.dp)
+                modifier = Modifier.padding(start = 10.dp, bottom = 8.dp)
             )
             SettingsItem(text = user?.about ?: "", type = "none", subtitle = "")
         }
     }
 }
-
-
-
-
 
 @Composable
 fun GradientBlurOverlay(
@@ -140,4 +166,3 @@ fun GradientBlurOverlay(
             )
     )
 }
-
