@@ -20,14 +20,19 @@ import com.example.rmp_front.viewmodel.chatsList.ChatsListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatsListScreen(navController: NavHostController) {
+fun ChatsListScreen(userId: String, navController: NavHostController) {
     val viewModel: ChatsListViewModel = viewModel()
     val chats by viewModel.chats.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
 
     val error by viewModel.error.collectAsState()
+    val user by viewModel.user.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+
+    LaunchedEffect(userId){
+        viewModel.loadChats(userId)
+    }
 
     Scaffold(
 

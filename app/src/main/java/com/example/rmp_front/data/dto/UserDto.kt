@@ -1,6 +1,5 @@
 package com.example.rmp_front.data.dto
 
-import com.example.rmp_front.data.models.Chat
 import com.example.rmp_front.data.models.User
 import kotlinx.serialization.Serializable
 

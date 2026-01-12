@@ -7,9 +7,9 @@ import com.example.rmp_front.data.repository.ChatRepository
 class ChatsListUseCase(
     private val repository: ChatRepository
 ) {
-    suspend operator fun invoke(): Result<List<Chat>> {
+    suspend operator fun invoke(userId: String): Result<List<Chat>> {
         return try {
-            val dto = repository.getChats()   // DTO
+            val dto = repository.getChats(userId)   // DTO
             val chats = dto.chats.map { it.toDomain() }
             Result.success(chats)
         } catch (e: Exception) {

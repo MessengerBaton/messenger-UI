@@ -21,13 +21,14 @@ import com.example.rmp_front.ui_component.navigation.Routes
 import com.example.rmp_front.viewmodel.login.LoginViewModel
 
 import kotlinx.coroutines.delay
+import okhttp3.internal.userAgent
 
 
 @Composable
 fun LoginScreen(navController: NavController) {
 
     val viewModel: LoginViewModel = viewModel()
-    val response by viewModel.response.collectAsState()
+    val user by viewModel.user.collectAsState()
     val error by viewModel.error.collectAsState()
 
     val (errorNotification, setErrorNotification) = rememberToastState()
@@ -35,9 +36,13 @@ fun LoginScreen(navController: NavController) {
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    LaunchedEffect(response) {
-        if (response == true) {
-            navController.navigate(Routes.CHATS_LIST)
+    LaunchedEffect(user) {
+        user?.let{
+            navController.navigate(Routes.CHATS_LIST){
+                popUpTo(Routes.LOGIN){
+                    inclusive = true
+                }
+            }
         }
     }
 
