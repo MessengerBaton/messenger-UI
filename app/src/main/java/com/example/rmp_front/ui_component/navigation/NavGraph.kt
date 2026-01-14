@@ -32,6 +32,7 @@ object Routes {
     const val LOGIN = "login"
     const val REGISTER = "register"
     const val GROUP = "group"
+    const val AGREEMENT = "agreement"
 
 //    const val TMP = "tmp" // тест подключения к серверу
 }
@@ -113,6 +114,10 @@ fun NavGraph(
         ) { backStackEntry ->
             val groupId = backStackEntry.arguments?.getString("groupId")!!
             GroupScreen(groupId = groupId, navController = navController)
+        }
+
+        composable(Routes.AGREEMENT){
+            UserAgreementScreen(navController = navController)
         }
     }
 }
