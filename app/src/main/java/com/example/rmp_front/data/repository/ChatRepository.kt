@@ -10,8 +10,8 @@ import com.example.rmp_front.data.models.toDto
 
 class ChatRepository(private val api: ServerClient) {
 
-    suspend fun getChats(): ChatListResponse {
-        return api.getChats()
+    suspend fun getChats(userId : String): ChatListResponse {
+        return api.getChats(userId)
     }
 
 

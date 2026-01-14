@@ -34,6 +34,8 @@ class ChatsListViewModel() : ViewModel() {
     private val _chats = MutableStateFlow<List<Chat>>(emptyList())
     val chats: StateFlow<List<Chat>> = _chats
 
+    private val _user = MutableStateFlow<User?>(null)
+    val user: StateFlow<User?> = _user
 
 
     private val _error = MutableStateFlow<String?>(null)
@@ -42,13 +44,13 @@ class ChatsListViewModel() : ViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    init {
-        loadChats()
-    }
+//    init {
+//        loadChats()
+//    }
 
-    fun loadChats() {
+    fun loadChats(userId: String) {
         viewModelScope.launch {
-            val chats = async { chatsListUseCase() }
+            val chats = async { chatsListUseCase(userId) }
             val chatsResult = chats.await()
 
             chatsResult.onSuccess {

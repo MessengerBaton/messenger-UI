@@ -1,6 +1,7 @@
 package com.example.rmp_front.viewmodel.register
 
 
+import com.example.rmp_front.data.models.User
 import com.example.rmp_front.data.repository.AuthRepository
 
 
@@ -18,19 +19,16 @@ class RegisterUseCase(private val repository: AuthRepository) {
         return Result.success(Unit)
     }
 
-    suspend operator fun invoke(phone: String, password: String): Result<Unit> {
+    suspend operator fun invoke(phone: String, password: String): Result<User> {
         if (password.isBlank()) {
             return Result.failure(Exception("Please enter password"))
         }
 
         return try {
-            repository.register(phone, password)
-            Result.success(Unit)
+            val user = repository.register(phone, password)
+            Result.success(user)
         } catch (e: Exception) {
             Result.failure(e)
         }
-
-
-
     }
 }

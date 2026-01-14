@@ -21,8 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.rmp_front.data.RetrofitClient
-import com.example.rmp_front.data.dto.MessageDto
 import com.example.rmp_front.data.models.Message
 import com.example.rmp_front.ui_component.components.AddButton
 import com.example.rmp_front.ui_component.components.CustomTextField

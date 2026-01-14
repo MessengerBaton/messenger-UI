@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.rmp_front.data.RegisterStep
 import com.example.rmp_front.ui_component.components.AppToast
 import com.example.rmp_front.ui_component.components.rememberToastState
 import com.example.rmp_front.ui_component.navigation.Routes
@@ -31,30 +32,22 @@ fun RegisterScreen(navController: NavController) {
     var password by remember { mutableStateOf("") }
 
     val viewModel: RegisterViewModel = viewModel()
-    val response by viewModel.response.collectAsState()
+    val user by viewModel.user.collectAsState()
+    val step by viewModel.step.collectAsState()
     val error by viewModel.error.collectAsState()
 
     val (errorNotification, setErrorNotification) = rememberToastState()
 
-    var isPhoneStage by remember { mutableStateOf(true) }
 
-    LaunchedEffect(response, error) {
-        if (response == null && isPhoneStage && error == null && !phone.isBlank()) {
-            isPhoneStage = false
+
+    LaunchedEffect(user) {
+        user?.let {
+            navController.navigate(Routes.CHATS_LIST) {
+                popUpTo(Routes.REGISTER) { inclusive = true }
+            }
         }
     }
 
-    LaunchedEffect(response, error) {
-        if (response == true && !isPhoneStage && error == null) {
-            navController.navigate(Routes.CHATS_LIST)
-        }
-    }
-
-    LaunchedEffect(error) {
-        if (error != null) {
-            setErrorNotification(error!!)
-        }
-    }
 
     Box(modifier = Modifier.fillMaxSize()
         .background(MaterialTheme.colorScheme.background)) {
@@ -87,78 +80,77 @@ fun RegisterScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center
         ) {
 
-            if (isPhoneStage) {
+            when (step) {
 
-                OutlinedTextField(
-                    value = phone,
-                    onValueChange = { phone = it },
-                    label = { Text("Phone number") },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        cursorColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    shape = RoundedCornerShape(18.dp),
-                    modifier = Modifier.fillMaxWidth()
-                )
+                RegisterStep.PHONE -> {
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(
-                    onClick = {
-                        viewModel.checkPhoneNumber(phone)
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
+                    OutlinedTextField(
+                        value = phone,
+                        onValueChange = { phone = it },
+                        label = { Text("Phone number") },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                            cursorColor = MaterialTheme.colorScheme.onPrimary,
+                        ),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                        shape = RoundedCornerShape(18.dp),
+                        modifier = Modifier.fillMaxWidth()
                     )
-                ) {
-                    Text(text = "Continue")
-                }
-            } else {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .clickable {  }
-                ) {
-                    IconButton(onClick = {isPhoneStage = true},
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Button(
+                        onClick = { viewModel.checkPhoneNumber(phone) },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        )
                     ) {
+                        Text(text = "Continue")
+                    }
+                }
+
+                RegisterStep.PASSWORD -> {
+
+                    IconButton(onClick = { viewModel.backToPhone() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back",
                             tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }
-                }
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Password") },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        cursorColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                    visualTransformation = PasswordVisualTransformation(),
-                    shape = RoundedCornerShape(18.dp),
-                    modifier = Modifier.fillMaxWidth()
-                )
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(
-                    onClick = {
-                        viewModel.register(phone = password, password = password)
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
+                    OutlinedTextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        label = { Text("Password") },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                            cursorColor = MaterialTheme.colorScheme.onPrimary,
+                        ),
+                        visualTransformation = PasswordVisualTransformation(),
+                        shape = RoundedCornerShape(18.dp),
+                        modifier = Modifier.fillMaxWidth()
                     )
-                ) {
-                    Text(text = "Register")
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Button(
+                        onClick = {
+                            viewModel.register(phone = phone, password = password)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Text(text = "Register")
+                    }
                 }
             }
+
 
             Spacer(modifier = Modifier.height(16.dp))
 

@@ -3,6 +3,7 @@ package com.example.rmp_front.data
 import com.example.rmp_front.data.dto.ChatDto
 import com.example.rmp_front.data.dto.ChatInfoDto
 import com.example.rmp_front.data.dto.ChatListResponse
+import com.example.rmp_front.data.dto.GroupDto
 import com.example.rmp_front.data.dto.LoginResponse
 import com.example.rmp_front.data.dto.MessageDto
 import com.example.rmp_front.data.dto.MessageListResponse
@@ -10,6 +11,7 @@ import com.example.rmp_front.data.dto.RegisterResponse
 import com.example.rmp_front.data.dto.UserDto
 import com.example.rmp_front.data.models.Chat
 import com.example.rmp_front.data.models.Message
+import com.example.rmp_front.data.models.User
 import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.engine.android.*
@@ -24,6 +26,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
+import kotlin.String
 
 object ServerClient {
     // Подставь сюда адрес своего сервера:
@@ -54,9 +57,9 @@ object ServerClient {
         }
     }
 
-    suspend fun getTemp(): List<Message> {
-        return http.get("${BASE}/data-test").body()
-    }
+//    suspend fun getTemp(): List<Message> {
+//        return http.get("${BASE}/data-test").body()
+//    }
 
     suspend fun login(phone: String, password: String): LoginResponse {
 //        return http.post("${BASE}/login") {
@@ -64,18 +67,34 @@ object ServerClient {
 //        }.body()
         return LoginResponse(
             success = true,
+            user = UserDto(
+                id = "1",
+                nickname = "Kitty",
+                name = "Kitty",
+                phone = phone,
+                about = null,
+                avatarUrl = null
+            )
         )
     }
 
     suspend fun register(phone: String, password: String): RegisterResponse {
         return RegisterResponse(
             success = true,
+            user = UserDto(
+                id = "sdfgthyujikol",
+                nickname = "Kitty",
+                name = "Kitty",
+                phone = phone,
+                about = null,
+                avatarUrl = null
+            )
         )
     }
 
 
     // пока заглушка
-    suspend fun getChats(): ChatListResponse {
+    suspend fun getChats(userId: String): ChatListResponse {
         return ChatListResponse(
             chats = listOf(
                 ChatDto(
@@ -170,4 +189,30 @@ object ServerClient {
         )
     }
 
+
+    suspend fun getGroupById(groupId: String): GroupDto {
+        return GroupDto(
+            id = "2",
+            userId = "2",
+            name = "Kitty Gang",
+            members = listOf(
+                UserDto(
+                    id = "1",
+                    nickname = "Murrr",
+                    name = "Kitty",
+                    phone = "89888888888",
+                    about = null,
+                    avatarUrl = null,
+                ),
+                UserDto(
+                    id = "2",
+                    nickname = "Meow",
+                    name = "Meow",
+                    phone = "89888888888",
+                    about = null,
+                    avatarUrl = null
+                )
+            )
+        )
+    }
 }

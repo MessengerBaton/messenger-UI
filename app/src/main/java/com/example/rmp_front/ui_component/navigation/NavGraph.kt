@@ -10,6 +10,7 @@ import com.example.rmp_front.ui_component.screens.ChangeProfileScreen
 import com.example.rmp_front.ui_component.screens.ChatScreen
 import com.example.rmp_front.ui_component.screens.ChatsListScreen
 import com.example.rmp_front.ui_component.screens.FriendProfileScreen
+import com.example.rmp_front.ui_component.screens.GroupScreen
 import com.example.rmp_front.ui_component.screens.LoginScreen
 import com.example.rmp_front.ui_component.screens.MyProfileScreen
 import com.example.rmp_front.ui_component.screens.RegisterScreen
@@ -30,6 +31,7 @@ object Routes {
     const val FRIEND_PROFILE = "friend_profile/{userId}"
     const val LOGIN = "login"
     const val REGISTER = "register"
+    const val GROUP = "group"
 
 //    const val TMP = "tmp" // тест подключения к серверу
 }
@@ -47,9 +49,16 @@ fun NavGraph(
         composable(Routes.LOGIN){
             LoginScreen(navController = navController)
         }
-        composable(Routes.CHATS_LIST) {
-            ChatsListScreen(navController = navController)
+        composable(
+            route = Routes.CHATS_LIST,
+            arguments = listOf(
+                navArgument("userId") { defaultValue = "" },
+            )
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId")!!
+            ChatsListScreen(userId = userId, navController = navController)
         }
+
         composable(
             route = Routes.CHAT,
             arguments = listOf(
@@ -91,8 +100,19 @@ fun NavGraph(
             val userId = backStackEntry.arguments?.getString("userId")!!
             FriendProfileScreen(userId = userId, navController = navController)
         }
+
         composable(Routes.REGISTER){
             RegisterScreen(navController = navController)
+        }
+
+        composable(
+            route = Routes.GROUP,
+            arguments = listOf(
+                navArgument("groupId") { defaultValue = "" }
+            )
+        ) { backStackEntry ->
+            val groupId = backStackEntry.arguments?.getString("groupId")!!
+            GroupScreen(groupId = groupId, navController = navController)
         }
     }
 }
