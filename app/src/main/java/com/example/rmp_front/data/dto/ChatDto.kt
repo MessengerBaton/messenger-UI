@@ -1,9 +1,10 @@
 package com.example.rmp_front.data.dto
 
+import android.annotation.SuppressLint
 import com.example.rmp_front.data.models.Chat
 import com.example.rmp_front.data.models.Message
 import kotlinx.serialization.Serializable
-
+@SuppressLint("UnsafeOptInUsageError")
 @Serializable
 data class ChatDto(
     val id: String,
@@ -12,7 +13,7 @@ data class ChatDto(
     val lastMessage: MessageDto,
     val avatarUrl: String?,
 )
-
+@SuppressLint("UnsafeOptInUsageError")
 @Serializable
 data class ChatInfoDto(
     val id: String,
@@ -21,7 +22,7 @@ data class ChatInfoDto(
     val avatarUrl: String?,
 )
 
-
+@SuppressLint("UnsafeOptInUsageError")
 @Serializable
 data class ChatListResponse(
     val chats: List<ChatDto>

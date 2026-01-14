@@ -1,4 +1,4 @@
-package com.example.rmp_front.ui_component.screens
+package com.example.rmp_front.ui_component.screens.chats_screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,15 +13,25 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.rmp_front.ui_component.components.AddButton
 import com.example.rmp_front.ui_component.components.CustomTextField
 import com.example.rmp_front.ui_component.components.MiniChatInList
+import com.example.rmp_front.ui_component.navigation.Routes
 import com.example.rmp_front.viewmodel.chatsList.ChatsListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatsListScreen(userId: String, navController: NavHostController) {
     val viewModel: ChatsListViewModel = viewModel()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val savedStateHandle = backStackEntry?.savedStateHandle
+
+    val chatCreated by (savedStateHandle
+        ?.getStateFlow("chat_created", false)
+        ?.collectAsState(initial = false)
+        ?: remember { mutableStateOf(false) })
+
     val chats by viewModel.chats.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
@@ -32,6 +42,13 @@ fun ChatsListScreen(userId: String, navController: NavHostController) {
 
     LaunchedEffect(userId){
         viewModel.loadChats(userId)
+    }
+
+    LaunchedEffect(chatCreated) {
+        if (chatCreated) {
+            viewModel.loadChats(userId)
+            savedStateHandle?.set("chat_created", false)
+        }
     }
 
     Scaffold(
@@ -62,15 +79,21 @@ fun ChatsListScreen(userId: String, navController: NavHostController) {
                         modifier = Modifier.background(MaterialTheme.colorScheme.background)
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Создать группу", color = MaterialTheme.colorScheme.onPrimary) },
+                            text = {
+                                Text("Create group", color = MaterialTheme.colorScheme.onPrimary)
+                            },
                             onClick = {
                                 expanded = false
+                                navController.navigate(Routes.CREATE_CHAT)
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Создать контакт", color = MaterialTheme.colorScheme.onPrimary) },
+                            text = {
+                                Text("Create contact", color = MaterialTheme.colorScheme.onPrimary)
+                            },
                             onClick = {
                                 expanded = false
+                                navController.navigate(Routes.CREATE_CHAT)
                             }
                         )
                     }

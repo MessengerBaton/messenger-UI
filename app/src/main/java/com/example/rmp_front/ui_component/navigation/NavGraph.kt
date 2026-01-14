@@ -7,8 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.rmp_front.ui_component.screens.ChangeProfileScreen
-import com.example.rmp_front.ui_component.screens.ChatScreen
-import com.example.rmp_front.ui_component.screens.ChatsListScreen
 import com.example.rmp_front.ui_component.screens.FriendProfileScreen
 import com.example.rmp_front.ui_component.screens.GroupScreen
 import com.example.rmp_front.ui_component.screens.LoginScreen
@@ -16,6 +14,7 @@ import com.example.rmp_front.ui_component.screens.MyProfileScreen
 import com.example.rmp_front.ui_component.screens.RegisterScreen
 import com.example.rmp_front.viewmodel.MainViewModel
 import com.example.rmp_front.ui_component.screens.settings_screens.*
+import com.example.rmp_front.ui_component.screens.chats_screens.*
 
 //import com.example.rmp_front.ui_component.screens.TmpScreen
 
@@ -25,13 +24,16 @@ object Routes {
     const val NOTIFICATIONS = "notifications"
     const val PRIVACY_SECURITY = "privacy_security"
     const val PROFILE = "profile"
-    const val CHATS_LIST = "chats_list"
     const val CHAT = "chat/{chatId}"
     const val CHANGE_PROFILE = "change_profile"
     const val FRIEND_PROFILE = "friend_profile/{userId}"
     const val LOGIN = "login"
     const val REGISTER = "register"
     const val GROUP = "group"
+    const val CHATS_LIST = "chats_list/{userId}"
+    fun chatsList(userId: String) = "chats_list/$userId"
+
+    const val CREATE_CHAT = "create_chat"
 
 //    const val TMP = "tmp" // тест подключения к серверу
 }
@@ -113,6 +115,9 @@ fun NavGraph(
         ) { backStackEntry ->
             val groupId = backStackEntry.arguments?.getString("groupId")!!
             GroupScreen(groupId = groupId, navController = navController)
+        }
+        composable(Routes.CREATE_CHAT) {
+            ChatCreationScreen(navController = navController)
         }
     }
 }

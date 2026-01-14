@@ -1,4 +1,4 @@
-package com.example.rmp_front.ui_component.screens
+package com.example.rmp_front.ui_component.screens.chats_screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,8 +27,6 @@ import com.example.rmp_front.ui_component.components.CustomTextField
 import com.example.rmp_front.ui_component.components.MessageCard
 import com.example.rmp_front.ui_component.navigation.Routes
 import com.example.rmp_front.viewmodel.chat.ChatViewModel
-import kotlinx.coroutines.launch
-import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 

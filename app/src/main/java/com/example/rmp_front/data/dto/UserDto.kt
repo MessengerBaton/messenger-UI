@@ -1,8 +1,9 @@
 package com.example.rmp_front.data.dto
 
+import android.annotation.SuppressLint
 import com.example.rmp_front.data.models.User
 import kotlinx.serialization.Serializable
-
+@SuppressLint("UnsafeOptInUsageError")
 @Serializable
 data class UserDto(
     val id: String,

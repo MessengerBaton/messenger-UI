@@ -1,9 +1,11 @@
 package com.example.rmp_front.data.dto
 
 
+import android.annotation.SuppressLint
 import com.example.rmp_front.data.models.Group
 import kotlinx.serialization.Serializable
 
+@SuppressLint("UnsafeOptInUsageError")
 @Serializable
 data class GroupDto(
     val userId: String,
