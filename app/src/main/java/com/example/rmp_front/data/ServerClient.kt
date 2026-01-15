@@ -473,7 +473,7 @@ object ServerClient {
     }
 
     suspend fun getChatInfo(chatId: String): ChatInfoDto {
-        val chat = chats.first { it.id == chatId }
+        val chat = http.get("${BASE}/chat/$chatId").body<ChatDto>()
         return ChatInfoDto(
             id = chat.id,
             friendId = chat.friendId,
@@ -521,6 +521,7 @@ object ServerClient {
     }
 
 
-    suspend fun getGroupById(groupId: String): GroupDto =
-        groups.first { it.id == groupId } // TODO пока на бэке нет
+    suspend fun getGroupById(groupId: String): GroupDto {
+        return http.get("${BASE}/chat/$groupId").body()
+    }
 }
