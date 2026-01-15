@@ -15,19 +15,19 @@ class ChatCreationUseCase(
     private val groupRepository: GroupRepository,
     private val chatRepository: ChatRepository
 ) {
-    suspend fun createGroup(chatTitle: String, users: List<User>): Result<Group> {
+    suspend fun createGroup(userId: String, chatTitle: String, users: List<User>): Result<Group> {
         return try {
             val usersDto = users.map { user -> user.toDto() }
-            val dto = groupRepository.createGroup(chatTitle, usersDto)
+            val dto = groupRepository.createGroup(userId, chatTitle, usersDto)
             Result.success(dto.toDomain())
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun createChat(user: User): Result<Chat> {
+    suspend fun createChat(userId: String, user: User): Result<Chat> {
         return try {
-            val dto = chatRepository.createChat(user)
+            val dto = chatRepository.createChat(userId, user)
             Result.success(dto.toDomain())
         } catch (e: Exception) {
             Result.failure(e)

@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -27,6 +28,8 @@ import okhttp3.internal.userAgent
 @Composable
 fun LoginScreen(navController: NavController) {
 
+    val context = LocalContext.current
+
     val viewModel: LoginViewModel = viewModel()
     val user by viewModel.user.collectAsState()
     val error by viewModel.error.collectAsState()
@@ -37,7 +40,7 @@ fun LoginScreen(navController: NavController) {
     var password by remember { mutableStateOf("") }
 
     LaunchedEffect(user) {
-        user?.let{
+        if (user != null) {
             navController.navigate(Routes.CHATS_LIST){
                 popUpTo(Routes.LOGIN){
                     inclusive = true
@@ -120,7 +123,7 @@ fun LoginScreen(navController: NavController) {
             Button(
                 onClick = {
                     // проверка в бд в теории как то так
-                    viewModel.checkPersonData(phone, password)
+                    viewModel.checkPersonData(phone, password, context)
 
                 },
                 modifier = Modifier.fillMaxWidth(),

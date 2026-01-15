@@ -1,198 +1,200 @@
 package com.example.rmp_front.ui_component.screens
 
+
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.navigation.NavHostController
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import com.example.rmp_front.ui_component.components.SettingsItem
-import com.example.rmp_front.ui_component.navigation.Routes
+import com.example.rmp_front.data.models.Message
+import com.example.rmp_front.ui_component.components.AddButton
+import com.example.rmp_front.ui_component.components.CustomTextField
+import com.example.rmp_front.ui_component.components.MessageCard
+import com.example.rmp_front.viewmodel.chat.ChatViewModel
 import com.example.rmp_front.viewmodel.group.GroupViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupScreen(groupId: String, navController: NavController) {
+fun GroupScreen(groupId: String, navController: NavHostController) {
 
-//    var profileImage by remember { mutableStateOf("") }
-//    var name by remember { mutableStateOf("Kitty") }
-//    var username by remember { mutableStateOf("@super_kitty") }
-//    var phoneNumber by remember { mutableStateOf("89226593565") }
-//    var status by remember { mutableStateOf("hi i'm Kitty") }
-    var selectedTab by remember { mutableStateOf(0) }
+    var messageText by remember { mutableStateOf("") }
+    val listState = rememberLazyListState()
+    var expanded by remember { mutableStateOf(false) }
 
-    val viewModel: GroupViewModel = viewModel()
-    val group by viewModel.group.collectAsState()
+    val chatViewModel: ChatViewModel = viewModel()
+    val groupViewModel: GroupViewModel = viewModel()
+
+    val groupInfo by groupViewModel.group.collectAsState()
+
+    val messages by chatViewModel.message.collectAsState()
 
     LaunchedEffect(groupId){
-        viewModel.loadGroup(groupId)
+        groupViewModel.loadGroup(groupId)
     }
 
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 30.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(400.dp)
-                    .clip(RectangleShape)
-                    .background(MaterialTheme.colorScheme.primary)
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+
+                        IconButton(onClick = { navController.popBackStack() },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Back",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+
+                        Text(
+                            text = groupInfo?.name ?: "",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable {navController.navigate("group_info/${groupInfo?.id}")},
+                            textAlign = TextAlign.Center,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .padding(end = 30.dp)
+                                .size(44.dp)
+                                .background(Color.Gray.copy(alpha = 0.5f), shape = CircleShape)
+                                .clickable {navController.navigate("friend_profile/${groupInfo?.id}")},
+                        )
+
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
             )
-
-            Box(
-                modifier = Modifier.padding(start = 16.dp, top = 10.dp)
-                    .align(Alignment.TopStart)
-                    .clickable {  }
-            ) {
-                IconButton(onClick = {navController.popBackStack() },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-            }
-            // Блюр
-            GradientBlurOverlay(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .align(Alignment.BottomStart)
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 40.dp, bottom = 14.dp)
-                    .align(Alignment.BottomStart),
-
-
-                ) {
-                Text(
-                    text = group?.name ?: "",
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = 16.sp,
-                    modifier = Modifier.align(Alignment.CenterStart)
-                )
-                // я не придумала какие не заебные по исполнению функции туда впихнуть
-
-//                Row(modifier = Modifier
-//                    .align(Alignment.BottomEnd)
-//                    .padding(end = 40.dp),
-//                verticalAlignment = Alignment.CenterVertically,
-//                ){
-//                    IconButton(
-//                        onClick = {navController.popBackStack() } ,
-//                        modifier = Modifier
-//                            .background(
-//                                color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
-//                                shape = RoundedCornerShape(12.dp)
-//                            )
-//                            .padding(2.dp),
-//
-//                        ) {
-//                        Icon(
-//                            imageVector = Icons.Default.Search,
-//                            contentDescription = "Search in chat",
-//                            tint = MaterialTheme.colorScheme.onSecondary
-//                        )
-//                    }
-//                    Spacer(modifier = Modifier.width(10.dp))
-//
-//                    IconButton(
-//                        onClick = { navController.popBackStack() } ,
-//                        modifier = Modifier
-//                            .background(
-//                                color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
-//                                shape = RoundedCornerShape(12.dp)
-//                            )
-//                            .padding(2.dp)
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Default.MoreHoriz,
-//                            contentDescription = "More",
-//                            tint = MaterialTheme.colorScheme.onSecondary
-//                        )
-//                    }
-//                }
-            }
-        }
-
-
-        Column(modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 40.dp)
-        ) {
-            Text(
-                text = "Members",
-                color = MaterialTheme.colorScheme.onSecondary,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(start = 20.dp)
-            )
-//            f
-//          что то хуета какая то
-//            вообще переделать надо чтоб еще и ава была
-            group?.let { groupMembers ->
-                for (user in groupMembers.members) {
-                    SettingsItem(text = user.name , type = "none", subtitle = "", onClick = {navController.navigate("friend_profile/${user.id}")})
-                }
-            }
-
-
-        }
-
-
-        Column(
-            modifier = Modifier.fillMaxWidth()
-                .padding(top = 30.dp)
-        ) {
+        },
+        bottomBar = {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.primary)
-                    .height(40.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
+                    .height(60.dp)
             ) {
-                Text(
-                    text = "Photo",
-                    color = if (selectedTab == 0) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary,
+                AddButton(
                     modifier = Modifier
-                        .clickable { selectedTab = 0 }
+                        .padding(start = 5.dp, top = 2.dp),
+                    onClick = { expanded = true }
+
                 )
 
-                Text(
-                    text = "Video",
-                    color = if (selectedTab == 1) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary,
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.background(MaterialTheme.colorScheme.background)
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Добавить фото", color = MaterialTheme.colorScheme.onPrimary) },
+                        onClick = {
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Добавить видео", color = MaterialTheme.colorScheme.onPrimary) },
+                        onClick = {
+                            expanded = false
+                        }
+                    )
+                }
+
+                CustomTextField(
+                    icon = false,
+                    placeHolder = "Type here",
+                    value = messageText,
+                    onValueChange = { messageText = it },
                     modifier = Modifier
-                        .clickable { selectedTab = 1 }
+                        .background(MaterialTheme.colorScheme.primary)
+                        .width(290.dp)
+                        .padding(vertical = 6.dp)
                 )
+
+                Button(
+                    onClick = {
+                        if (messageText.isNotEmpty()) {
+                            val time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+
+                            val message = Message(
+                                id = UUID.randomUUID().toString(),
+                                chatId = groupId,
+                                timestamp = time,
+                                text = messageText,
+                                isFromMe = true
+                            )
+
+//                            coroutineScope.launch {
+//                                try {
+//                                    val response: Response<Message> = RetrofitClient.apiService.sendMessage(message)
+//
+//                                    if (response.isSuccessful) {
+//                                        messages.add(Pair("Отправлено: $messageText", time))
+//                                        coroutineScope.launch { listState.scrollToItem(messages.size - 1) }
+//                                    } else {
+//                                        messages.add(Pair("Ошибка: ${response.code()}", time))
+//                                    }
+//                                } catch (e: Exception) {
+//                                    messages.add(Pair("Ошибка сети: ${e.message}", time))
+//                                }
+                            chatViewModel.sendMessage(message)
+                            messageText = ""
+//                            }
+                        }
+                    },
+                    modifier = Modifier.padding(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Send,
+                        contentDescription = "Send",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(20.dp)
+
+                    )
+                }
             }
-
-            // ----- GRID -----
-            if (selectedTab == 0) {
-                Text("Photo", color = MaterialTheme.colorScheme.onSecondary)
-//            отображение сетки под фото
-            } else {
-                Text("Video", color = MaterialTheme.colorScheme.onSecondary)
-//            отображение сетки под видео
+        }
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .focusable()
+                .background(MaterialTheme.colorScheme.background),
+            state = listState,
+            reverseLayout = false,
+            contentPadding = PaddingValues(bottom = 8.dp),
+        ) {
+            items(messages) { message ->
+                MessageCard(message.text, message.timestamp, message.isFromMe)
             }
         }
     }

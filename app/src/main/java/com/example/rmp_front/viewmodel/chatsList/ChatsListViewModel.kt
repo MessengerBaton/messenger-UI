@@ -1,8 +1,10 @@
 package com.example.rmp_front.viewmodel.chatsList
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rmp_front.data.ServerClient
+import com.example.rmp_front.data.SessionManager
 import com.example.rmp_front.data.models.Chat
 import com.example.rmp_front.data.models.Group
 import com.example.rmp_front.data.models.User
@@ -14,8 +16,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-class ChatsListViewModel() : ViewModel() {
+class ChatsListViewModel : ViewModel() {
 
     private val chatRepository = ChatRepository(ServerClient)
     private val groupRepository = GroupRepository(ServerClient)
@@ -27,43 +28,27 @@ class ChatsListViewModel() : ViewModel() {
     private val _groups = MutableStateFlow<List<Group>>(emptyList())
     val groups: StateFlow<List<Group>> = _groups
 
-    private val _user = MutableStateFlow<User?>(null)
-    val user: StateFlow<User?> = _user
-
-
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading
+    fun loadAll(userId: String) {
+        loadChats(userId)
+        loadGroups(userId)
+    }
 
-//    init {
-//        loadChats()
-//    }
-
-    fun loadChats(userId: String) {
+    private fun loadChats(userId: String) {
         viewModelScope.launch {
-            val chats = async { chatsListUseCase.loadChats(userId) }
-            val chatsResult = chats.await()
-
-            chatsResult.onSuccess {
-                _chats.value = it
-            }.onFailure {
-                _error.value =  it.message ?: "Unknown error"
-            }
+            chatsListUseCase.loadChats(userId)
+                .onSuccess { _chats.value = it }
+                .onFailure { _error.value = it.message }
         }
     }
 
-    fun loadGroups(userId: String) {
+    private fun loadGroups(userId: String) {
         viewModelScope.launch {
-            val groups = async { chatsListUseCase.loadGroups(userId) }
-            val groupsResult = groups.await()
-
-            groupsResult.onSuccess {
-                _groups.value = it
-            }.onFailure {
-                _error.value =  it.message ?: "Unknown error"
-            }
+            chatsListUseCase.loadGroups(userId)
+                .onSuccess { _groups.value = it }
+                .onFailure { _error.value = it.message }
         }
     }
 }

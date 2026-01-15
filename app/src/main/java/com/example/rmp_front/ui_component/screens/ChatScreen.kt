@@ -35,10 +35,8 @@ import java.util.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(chatId: String, navController: NavHostController) {
-//    var senderId by remember { mutableStateOf("user_1") }
+
     var messageText by remember { mutableStateOf("") }
-//    val messages = remember { mutableStateListOf<Pair<String, String>>() }
-    val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
     var expanded by remember { mutableStateOf(false) }
 
@@ -76,7 +74,7 @@ fun ChatScreen(chatId: String, navController: NavHostController) {
                             color = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier
                                 .weight(1f)
-                                .clickable {navController.navigate("friend_profile/${chatInfo?.userId}")},
+                                .clickable {navController.navigate("friend_profile/${chatInfo?.friendId}")},
                             textAlign = TextAlign.Center,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -87,7 +85,7 @@ fun ChatScreen(chatId: String, navController: NavHostController) {
                                 .padding(end = 30.dp)
                                 .size(44.dp)
                                 .background(Color.Gray.copy(alpha = 0.5f), shape = CircleShape)
-                                .clickable {navController.navigate(Routes.FRIEND_PROFILE)},
+                                .clickable {navController.navigate("friend_profile/${chatInfo?.friendId}")},
                         )
 
                     }

@@ -11,6 +11,7 @@ import com.example.rmp_front.ui_component.screens.ChatCreationScreen
 import com.example.rmp_front.ui_component.screens.ChatScreen
 import com.example.rmp_front.ui_component.screens.ChatsListScreen
 import com.example.rmp_front.ui_component.screens.FriendProfileScreen
+import com.example.rmp_front.ui_component.screens.GroupInfoScreen
 import com.example.rmp_front.ui_component.screens.GroupScreen
 import com.example.rmp_front.ui_component.screens.LoginScreen
 import com.example.rmp_front.ui_component.screens.MyProfileScreen
@@ -32,7 +33,8 @@ object Routes {
     const val FRIEND_PROFILE = "friend_profile/{userId}"
     const val LOGIN = "login"
     const val REGISTER = "register"
-    const val GROUP = "group"
+    const val GROUP = "group/{groupId}"
+    const val GROUP_INFO = "group_info/{groupId}"
     const val AGREEMENT = "agreement"
     const val CREATE_CHAT = "create_chat"
 
@@ -59,7 +61,7 @@ fun NavGraph(
             )
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId")!!
-            ChatsListScreen(userId = userId, navController = navController)
+            ChatsListScreen(navController = navController)
         }
 
         composable(
@@ -72,9 +74,6 @@ fun NavGraph(
             ChatScreen(chatId = chatId, navController = navController)
         }
 
-//        composable(Routes.TMP) {
-//            TmpScreen(navController = navController)
-//        }
         composable(Routes.PROFILE) {
             MyProfileScreen(navController = navController, mainViewModel = mainViewModel)
         }
@@ -116,6 +115,16 @@ fun NavGraph(
         ) { backStackEntry ->
             val groupId = backStackEntry.arguments?.getString("groupId")!!
             GroupScreen(groupId = groupId, navController = navController)
+        }
+
+        composable(
+            route = Routes.GROUP_INFO,
+            arguments = listOf(
+                navArgument("groupId") { defaultValue = "" }
+            )
+        ) { backStackEntry ->
+            val groupId = backStackEntry.arguments?.getString("groupId")!!
+            GroupInfoScreen(groupId = groupId, navController = navController)
         }
 
         composable(Routes.AGREEMENT){

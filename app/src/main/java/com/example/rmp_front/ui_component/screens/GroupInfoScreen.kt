@@ -17,19 +17,24 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.rmp_front.ui_component.components.SettingsItem
-import com.example.rmp_front.viewmodel.friend.FriendViewModel
+import com.example.rmp_front.viewmodel.group.GroupViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FriendProfileScreen(userId: String, navController: NavController) {
+fun GroupInfoScreen(groupId: String, navController: NavController) {
 
+//    var profileImage by remember { mutableStateOf("") }
+//    var name by remember { mutableStateOf("Kitty") }
+//    var username by remember { mutableStateOf("@super_kitty") }
+//    var phoneNumber by remember { mutableStateOf("89226593565") }
+//    var status by remember { mutableStateOf("hi i'm Kitty") }
     var selectedTab by remember { mutableStateOf(0) }
 
-    val viewModel: FriendViewModel = viewModel()
-    val friend by viewModel.friend.collectAsState()
+    val viewModel: GroupViewModel = viewModel()
+    val group by viewModel.group.collectAsState()
 
-    LaunchedEffect(userId){
-        viewModel.loadFriend(userId)
+    LaunchedEffect(groupId){
+        viewModel.loadGroup(groupId)
     }
 
     Column (
@@ -79,9 +84,9 @@ fun FriendProfileScreen(userId: String, navController: NavController) {
                     .align(Alignment.BottomStart),
 
 
-            ) {
+                ) {
                 Text(
-                    text = friend?.nick ?: "",
+                    text = group?.name ?: "",
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 16.sp,
                     modifier = Modifier.align(Alignment.CenterStart)
@@ -94,28 +99,21 @@ fun FriendProfileScreen(userId: String, navController: NavController) {
             .padding(horizontal = 40.dp)
         ) {
             Text(
-                text = "Kitty name",
+                text = "Members",
                 color = MaterialTheme.colorScheme.onSecondary,
                 fontSize = 12.sp,
                 modifier = Modifier.padding(start = 20.dp)
             )
-            SettingsItem(text = friend?.name ?: "", type = "none", subtitle = "")
+//            f
+//          что то хуета какая то
+//            вообще переделать надо чтоб еще и ава была
+            group?.let { groupMembers ->
+                for (user in groupMembers.members) {
+                    SettingsItem(text = user.name , type = "none", subtitle = "", onClick = {navController.navigate("friend_profile/${user.id}")})
+                }
+            }
 
-            Text(
-                text = "Kitty number",
-                color = MaterialTheme.colorScheme.onSecondary,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(start = 20.dp)
-            )
-            SettingsItem(text = friend?.phone ?: "", type = "none", subtitle = "")
 
-            Text(
-                text = "Kitty info",
-                color = MaterialTheme.colorScheme.onSecondary,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(start = 20.dp)
-            )
-            SettingsItem(text = friend?.about ?: "", type = "none", subtitle = "")
         }
 
 

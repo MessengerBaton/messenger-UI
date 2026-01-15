@@ -54,6 +54,8 @@ class ChatViewModel() : ViewModel() {
         }
     }
 
+
+
     fun sendMessage(message: Message) {
         viewModelScope.launch {
             chatUseCase.sendMessage(message)

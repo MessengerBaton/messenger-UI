@@ -15,8 +15,8 @@ class GroupRepository(private val api: ServerClient) {
     }
 
 
-    suspend fun createGroup(chatTitle: String, users: List<UserDto>): GroupDto {
-        return api.createGroup(chatTitle, users)
+    suspend fun createGroup(userId: String, chatTitle: String, users: List<UserDto>): GroupDto {
+        return api.createGroup(userId, chatTitle, users)
     }
 
 }

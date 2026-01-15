@@ -28,6 +28,21 @@ class MainViewModel : ViewModel() {
         _user.value = newUser
     }
 
+
+    fun saveUser(updatedUser: User) {
+        viewModelScope.launch {
+            try {
+                val savedUser = userUseCase.updateUser(updatedUser)
+                    .getOrThrow()
+
+                _user.value = savedUser
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
+        }
+    }
+
+
     fun loadUser() {
         viewModelScope.launch {
             val user = async { userUseCase.getUser() }
