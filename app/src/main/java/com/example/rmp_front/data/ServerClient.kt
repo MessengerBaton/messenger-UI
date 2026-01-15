@@ -320,9 +320,15 @@ package com.example.rmp_front.data
 import com.example.rmp_front.data.dto.*
 import com.example.rmp_front.data.models.User
 import io.ktor.client.*
+import io.ktor.client.call.body
 import io.ktor.client.engine.android.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
+import io.ktor.client.request.get
+import io.ktor.client.request.patch
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import java.text.SimpleDateFormat
@@ -350,7 +356,7 @@ object ServerClient {
     // 🔹 IN-MEMORY STORAGE
     // ===============================
 
-    private const val CURRENT_USER_ID = "1"
+    private const val CURRENT_USER_ID = "11111111-1111-1111-1111-111111111111"
 
 
     private val users = mutableListOf(
@@ -426,19 +432,18 @@ object ServerClient {
     // 🔹 USERS
     // ===============================
 
-    suspend fun getUsers(): List<UserDto> = users
+    suspend fun getUsers(): List<UserDto> {
+        return http.get("${BASE}/users").body()
+    }
 
     suspend fun getUser(): UserDto = users.first()
 
-    suspend fun getUserById(id: String): UserDto =
-        users.first { it.id == id }
+    suspend fun getUserById(id: String): UserDto {
+        return http.get("${BASE}/user/$id").body()
+    }
 
     suspend fun updateUser(userDto: UserDto): UserDto {
-        val index = users.indexOfFirst { it.id == userDto.id }
-        if (index != -1) {
-            users[index] = userDto
-        }
-        return userDto
+        return http.patch("${BASE}/user/${userDto.id}").body()
     }
 
     // ===============================
@@ -453,17 +458,20 @@ object ServerClient {
             lastMessage = null,
             avatarUrl = null
         )
-        chats.add(chat)
-        return chat
+
+        return http.post("${BASE}/chat/create/private") {
+            setBody(chat)
+        }.body()
     }
 
 
     suspend fun getChats(userId: String): List<ChatDto> {
-        return chats.filter { it.userId == CURRENT_USER_ID }
+        println(http.get("${BASE}/chats/$userId/with/private").body<List<ChatDto>>())
+        return http.get("${BASE}/chats/$userId/with/private").body()
     }
 
-
     suspend fun getChatInfo(chatId: String): ChatInfoDto {
+        // TODO на бэке пока нет
         val chat = chats.first { it.id == chatId }
         return ChatInfoDto(
             id = chat.id,
@@ -478,26 +486,13 @@ object ServerClient {
     // ===============================
 
     suspend fun sendMessage(message: MessageDto): MessageDto {
-        val msg = message.copy(
-            id = UUID.randomUUID().toString(),
-            timestamp = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-        )
-
-        messages.add(msg)
-
-        val chatIndex = chats.indexOfFirst { it.id == msg.chatId }
-        if (chatIndex != -1) {
-            chats[chatIndex] =
-                chats[chatIndex].copy(lastMessage = msg)
-        }
-
-        return msg
+        return http.post("${BASE}/message/${message.chatId}/by/${CURRENT_USER_ID}") {
+            setBody(message)
+        }.body()
     }
 
     suspend fun getChatMessages(chatId: String): MessageListResponse {
-        return MessageListResponse(
-            messages = messages.filter { it.chatId == chatId }
-        )
+        return http.get("${BASE}/chat/$chatId/messages?user_id=$CURRENT_USER_ID").body()
     }
 
     // ===============================
@@ -511,17 +506,19 @@ object ServerClient {
             members = users,
             userId = CURRENT_USER_ID,
             avatarUrl = null,
-            lastMessage = MessageDto("567", "nj", "ya umirayu", SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()), true, )
+            lastMessage = null
         )
-        groups.add(group)
-        return group
+
+        return http.post("${BASE}/chat/create/group") {
+            setBody(group)
+        }.body()
     }
 
     suspend fun getGroups(userId: String): List<GroupDto> {
-        return groups.filter { it.userId == CURRENT_USER_ID }
+        return http.get("${BASE}/chats/$userId/with/group").body()
     }
 
 
     suspend fun getGroupById(groupId: String): GroupDto =
-        groups.first { it.id == groupId }
+        groups.first { it.id == groupId } // TODO пока на бэке нет
 }
