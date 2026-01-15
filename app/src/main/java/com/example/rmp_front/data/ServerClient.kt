@@ -406,7 +406,7 @@ object ServerClient {
 
     suspend fun login(phone: String, password: String): LoginResponse {
         return LoginResponse(success = true, user = UserDto(
-            id = "1",
+            id = "11111111-1111-1111-1111-111111111111",
             nickname = "gbhjk",
             name = "ku",
             phone = "89888888888",
@@ -468,7 +468,6 @@ object ServerClient {
 
 
     suspend fun getChats(userId: String): List<ChatDto> {
-        println(http.get("${BASE}/chats/$userId/with/private").body<List<ChatDto>>())
         return http.get("${BASE}/chats/$userId/with/private").body()
     }
 
