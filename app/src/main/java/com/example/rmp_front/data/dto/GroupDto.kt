@@ -10,6 +10,8 @@ data class GroupDto(
     val id: String,
     val name: String,
     val members: List<UserDto>,
+    val lastMessage: MessageDto?,
+    val avatarUrl: String?,
 )
 
 
@@ -18,4 +20,6 @@ fun GroupDto.toDomain() = Group(
     id = id,
     name = name,
     members = members.map { it.toDomain() },
+    lastMessage = lastMessage?.toDomain()?.text,
+    timestamp = lastMessage?.toDomain()?.timestamp,
 )

@@ -68,7 +68,8 @@ fun SettingsScreen(
                 SettingsItem("FAQ", type = "default", subtitle = "")
             }
             item {
-                SettingsItem("User agreement", type = "default", subtitle = "")
+                SettingsItem("User agreement", type = "default", subtitle = "", onClick = {navController.navigate(
+                    Routes.AGREEMENT)})
             }
         }
     }

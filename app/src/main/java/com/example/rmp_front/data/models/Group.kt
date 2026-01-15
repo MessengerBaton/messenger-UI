@@ -7,6 +7,9 @@ data class Group(
     val id: String,
     val name: String,
     val members: List<User>,
+    val lastMessage: String? = null,
+    val timestamp: String? = null,
+    val avatarUrl: String? = null,
 )
 
 

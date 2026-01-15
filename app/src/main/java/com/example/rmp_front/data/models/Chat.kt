@@ -6,7 +6,5 @@ data class Chat(
     val title: String,
     val lastMessage: String? = null,
     val timestamp: String? = null,
-    val unreadCount: Int = 0,
-    val avatarUrl: String? = null,
-    val isOnline: Boolean = false
+    val avatarUrl: String? = null
 )

@@ -32,7 +32,9 @@ fun CustomTextField(
     placeHolder: String,
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    trailingIcon: @Composable (() -> Unit)? = null
+
 ) {
     Box(
         modifier = modifier
@@ -76,6 +78,10 @@ fun CustomTextField(
                     innerTextField()
                 }
             )
+            if (trailingIcon != null) {
+                Spacer(Modifier.width(8.dp))
+                trailingIcon()
+            }
         }
     }
 }

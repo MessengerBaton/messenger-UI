@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.rmp_front.ui_component.screens.ChangeProfileScreen
+import com.example.rmp_front.ui_component.screens.ChatCreationScreen
 import com.example.rmp_front.ui_component.screens.ChatScreen
 import com.example.rmp_front.ui_component.screens.ChatsListScreen
 import com.example.rmp_front.ui_component.screens.FriendProfileScreen
@@ -32,6 +33,8 @@ object Routes {
     const val LOGIN = "login"
     const val REGISTER = "register"
     const val GROUP = "group"
+    const val AGREEMENT = "agreement"
+    const val CREATE_CHAT = "create_chat"
 
 //    const val TMP = "tmp" // тест подключения к серверу
 }
@@ -113,6 +116,15 @@ fun NavGraph(
         ) { backStackEntry ->
             val groupId = backStackEntry.arguments?.getString("groupId")!!
             GroupScreen(groupId = groupId, navController = navController)
+        }
+
+        composable(Routes.AGREEMENT){
+            UserAgreementScreen(navController = navController)
+        }
+
+
+        composable(Routes.CREATE_CHAT) {
+            ChatCreationScreen(navController = navController)
         }
     }
 }
