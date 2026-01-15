@@ -466,13 +466,11 @@ object ServerClient {
 
 
     suspend fun getChats(userId: String): List<ChatDto> {
-        println(http.get("${BASE}/chats/$userId/with/private").body<List<ChatDto>>())
         return http.get("${BASE}/chats/$userId/with/private").body()
     }
 
     suspend fun getChatInfo(chatId: String): ChatInfoDto {
-        // TODO на бэке пока нет
-        val chat = chats.first { it.id == chatId }
+        val chat = http.get("${BASE}/chat/$chatId").body<ChatDto>()
         return ChatInfoDto(
             id = chat.id,
             title = chat.title,
@@ -519,6 +517,7 @@ object ServerClient {
     }
 
 
-    suspend fun getGroupById(groupId: String): GroupDto =
-        groups.first { it.id == groupId } // TODO пока на бэке нет
+    suspend fun getGroupById(groupId: String): GroupDto {
+        return http.get("${BASE}/chat/$groupId").body()
+    }
 }
