@@ -1,8 +1,10 @@
 package com.example.rmp_front.viewmodel.chat
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rmp_front.data.ServerClient
+import com.example.rmp_front.data.SessionManager
 import com.example.rmp_front.data.models.Chat
 import com.example.rmp_front.data.models.Message
 import com.example.rmp_front.data.repository.ChatRepository
@@ -32,12 +34,12 @@ class ChatViewModel() : ViewModel() {
 
 
 
-    fun loadChat(chatId: String) {
+    fun loadChat(userId: String, chatId: String) {
         viewModelScope.launch {
             val chat = async { chatUseCase.getChatInfo(chatId) }
             val chatResult = chat.await()
 
-            val messages = async { chatUseCase.getChatMessages(chatId) }
+            val messages = async { chatUseCase.getChatMessages(userId, chatId) }
             val messagesResult = messages.await()
 
             chatResult.onSuccess {
@@ -56,12 +58,25 @@ class ChatViewModel() : ViewModel() {
 
 
 
-    fun sendMessage(message: Message) {
+    fun sendMessage(context: Context, message: Message) {
         viewModelScope.launch {
-            chatUseCase.sendMessage(message)
+            val userId = SessionManager.getUserId(context)
+            if (userId != null) {
+                val sendResult = chatUseCase.sendMessage(userId, message)
 
-            chatUseCase.getChatMessages(message.chatId)
+                sendResult.onFailure {
+                    _error.value = it.message ?: "Unknown error"
+                    return@launch
+                }
 
+                val messagesResult = chatUseCase.getChatMessages(userId, message.chatId)
+                messagesResult.onSuccess {
+                    _messages.value = it
+                }.onFailure {
+                    _error.value = it.message ?: "Unknown error"
+                }
+
+            }
         }
     }
 }

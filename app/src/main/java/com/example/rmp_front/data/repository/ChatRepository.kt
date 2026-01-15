@@ -18,8 +18,8 @@ class ChatRepository(private val api: ServerClient) {
     }
 
 
-    suspend fun getChatMessages(chatId: String): MessageListResponse {
-        return api.getChatMessages(chatId)
+    suspend fun getChatMessages(userId: String, chatId: String): MessageListResponse {
+        return api.getChatMessages(userId, chatId)
     }
 
 
@@ -28,9 +28,9 @@ class ChatRepository(private val api: ServerClient) {
     }
 
 
-    suspend fun sendMessage(message: Message): Message {
+    suspend fun sendMessage(userId: String, message: Message): Message {
         val dto = message.toDto()
-        api.sendMessage(dto)
+        api.sendMessage(userId, dto)
         return dto.toDomain()
     }
 

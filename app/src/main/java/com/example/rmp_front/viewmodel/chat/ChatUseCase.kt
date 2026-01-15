@@ -9,9 +9,9 @@ import com.example.rmp_front.data.repository.ChatRepository
 class ChatUseCase(
     private val repository: ChatRepository
 ) {
-    suspend fun getChatMessages(chatId: String): Result<List<Message>> {
+    suspend fun getChatMessages(userId: String, chatId: String): Result<List<Message>> {
         return try {
-            val dto = repository.getChatMessages(chatId)   // DTO
+            val dto = repository.getChatMessages(userId, chatId)   // DTO
             val chats = dto.messages.map { it.toDomain() }
             Result.success(chats)
         } catch (e: Exception) {
@@ -29,9 +29,9 @@ class ChatUseCase(
         }
     }
 
-    suspend fun sendMessage(message: Message): Result<Message> {
+    suspend fun sendMessage(userId: String, message: Message): Result<Message> {
         return try {
-            val msg = repository.sendMessage(message)
+            val msg = repository.sendMessage(userId, message)
             Result.success(msg)
         } catch (e: Exception) {
             Result.failure(e)

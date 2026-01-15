@@ -18,9 +18,11 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.rmp_front.data.SessionManager
 import com.example.rmp_front.data.models.Message
 import com.example.rmp_front.ui_component.components.AddButton
 import com.example.rmp_front.ui_component.components.CustomTextField
@@ -36,6 +38,8 @@ import java.util.*
 @Composable
 fun ChatScreen(chatId: String, navController: NavHostController) {
 
+    val context = LocalContext.current
+
     var messageText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
     var expanded by remember { mutableStateOf(false) }
@@ -47,7 +51,10 @@ fun ChatScreen(chatId: String, navController: NavHostController) {
     val messages by viewModel.message.collectAsState()
 
     LaunchedEffect(chatId){
-        viewModel.loadChat(chatId)
+        val userId = SessionManager.getUserId(context)
+        if (userId != null) {
+            viewModel.loadChat(userId, chatId)
+        }
     }
 
 
@@ -163,7 +170,7 @@ fun ChatScreen(chatId: String, navController: NavHostController) {
 //                                } catch (e: Exception) {
 //                                    messages.add(Pair("Ошибка сети: ${e.message}", time))
 //                                }
-                            viewModel.sendMessage(message)
+                            viewModel.sendMessage(context, message)
                             messageText = ""
 //                            }
                         }
