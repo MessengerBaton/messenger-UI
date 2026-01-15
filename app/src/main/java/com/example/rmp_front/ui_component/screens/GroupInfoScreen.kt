@@ -14,8 +14,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.rmp_front.data.SessionManager
 import com.example.rmp_front.ui_component.components.SettingsItem
 import com.example.rmp_front.viewmodel.group.GroupViewModel
 
@@ -23,18 +25,17 @@ import com.example.rmp_front.viewmodel.group.GroupViewModel
 @Composable
 fun GroupInfoScreen(groupId: String, navController: NavController) {
 
-//    var profileImage by remember { mutableStateOf("") }
-//    var name by remember { mutableStateOf("Kitty") }
-//    var username by remember { mutableStateOf("@super_kitty") }
-//    var phoneNumber by remember { mutableStateOf("89226593565") }
-//    var status by remember { mutableStateOf("hi i'm Kitty") }
+    val context = LocalContext.current
     var selectedTab by remember { mutableStateOf(0) }
 
     val viewModel: GroupViewModel = viewModel()
     val group by viewModel.group.collectAsState()
 
     LaunchedEffect(groupId){
-        viewModel.loadGroup(groupId)
+        val userId = SessionManager.getUserId(context)
+        if (userId != null){
+            viewModel.loadGroup(userId, groupId)
+        }
     }
 
     Column (

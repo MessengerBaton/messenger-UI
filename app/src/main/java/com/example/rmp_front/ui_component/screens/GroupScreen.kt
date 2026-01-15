@@ -20,9 +20,11 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.rmp_front.data.SessionManager
 import com.example.rmp_front.data.models.Message
 import com.example.rmp_front.ui_component.components.AddButton
 import com.example.rmp_front.ui_component.components.CustomTextField
@@ -36,19 +38,23 @@ import java.util.*
 @Composable
 fun GroupScreen(groupId: String, navController: NavHostController) {
 
+    val context = LocalContext.current
+
     var messageText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
     var expanded by remember { mutableStateOf(false) }
 
-    val chatViewModel: ChatViewModel = viewModel()
     val groupViewModel: GroupViewModel = viewModel()
 
     val groupInfo by groupViewModel.group.collectAsState()
 
-    val messages by chatViewModel.message.collectAsState()
+    val messages by groupViewModel.message.collectAsState()
 
     LaunchedEffect(groupId){
-        groupViewModel.loadGroup(groupId)
+        val userId = SessionManager.getUserId(context)
+        if (userId != null) {
+            groupViewModel.loadGroup(userId, groupId)
+        }
     }
 
 
@@ -86,7 +92,7 @@ fun GroupScreen(groupId: String, navController: NavHostController) {
                                 .padding(end = 30.dp)
                                 .size(44.dp)
                                 .background(Color.Gray.copy(alpha = 0.5f), shape = CircleShape)
-                                .clickable {navController.navigate("friend_profile/${groupInfo?.id}")},
+                                .clickable {navController.navigate("group_info/${groupInfo?.id}")},
                         )
 
                     }
@@ -164,7 +170,7 @@ fun GroupScreen(groupId: String, navController: NavHostController) {
 //                                } catch (e: Exception) {
 //                                    messages.add(Pair("Ошибка сети: ${e.message}", time))
 //                                }
-                            chatViewModel.sendMessage(message)
+                            groupViewModel.sendMessage(context, message)
                             messageText = ""
 //                            }
                         }

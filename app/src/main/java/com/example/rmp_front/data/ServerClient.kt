@@ -163,7 +163,7 @@
 //    // 🔹 MESSAGES
 //    // ===============================
 //
-//    suspend fun sendMessage(message: MessageDto): MessageDto {
+//    suspend fun sendMessage(userId: String, message: MessageDto): MessageDto {
 //        val msg = message.copy(
 //            id = UUID.randomUUID().toString(),
 //            timestamp = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
@@ -180,7 +180,7 @@
 //        return msg
 //    }
 //
-//    suspend fun getChatMessages(chatId: String): MessageListResponse {
+//    suspend fun getChatMessages(userId: String, chatId: String): MessageListResponse {
 //        return MessageListResponse(
 //            messages = messages.filter { it.chatId == chatId }
 //        )
@@ -212,7 +212,7 @@
 //        groups.first { it.id == groupId }
 //}
 //
-//
+
 
 
 
