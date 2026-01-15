@@ -13,9 +13,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.ExperimentalMaterial3Api
+import com.example.rmp_front.data.models.Chat
+import com.example.rmp_front.data.models.Group
 import com.example.rmp_front.ui_component.components.AddButton
 import com.example.rmp_front.ui_component.components.CustomTextField
 import com.example.rmp_front.ui_component.components.MiniChatInList
+import com.example.rmp_front.ui_component.navigation.Routes
 import com.example.rmp_front.viewmodel.chatsList.ChatsListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,6 +26,7 @@ import com.example.rmp_front.viewmodel.chatsList.ChatsListViewModel
 fun ChatsListScreen(userId: String, navController: NavHostController) {
     val viewModel: ChatsListViewModel = viewModel()
     val chats by viewModel.chats.collectAsState()
+    val groups by viewModel.groups.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
 
@@ -32,7 +36,24 @@ fun ChatsListScreen(userId: String, navController: NavHostController) {
 
     LaunchedEffect(userId){
         viewModel.loadChats(userId)
+        viewModel.loadGroups(userId)
     }
+    val chatCreated by navController.currentBackStackEntry!!
+            .savedStateHandle
+            .getStateFlow<Boolean>("chat_created", false)
+            .collectAsState()
+
+    LaunchedEffect(chatCreated) {
+        if (chatCreated) {
+            viewModel.loadChats(userId)
+            viewModel.loadGroups(userId)
+
+            navController.currentBackStackEntry!!
+                .savedStateHandle
+                .set("chat_created", false)
+        }
+    }
+
 
     Scaffold(
 
@@ -62,15 +83,21 @@ fun ChatsListScreen(userId: String, navController: NavHostController) {
                         modifier = Modifier.background(MaterialTheme.colorScheme.background)
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Создать группу", color = MaterialTheme.colorScheme.onPrimary) },
+                            text = {
+                                Text("Create group", color = MaterialTheme.colorScheme.onPrimary)
+                            },
                             onClick = {
                                 expanded = false
+                                navController.navigate(Routes.CREATE_CHAT)
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Создать контакт", color = MaterialTheme.colorScheme.onPrimary) },
+                            text = {
+                                Text("Create contact", color = MaterialTheme.colorScheme.onPrimary)
+                            },
                             onClick = {
                                 expanded = false
+                                navController.navigate(Routes.CREATE_CHAT)
                             }
                         )
                     }
@@ -121,9 +148,31 @@ fun ChatsListScreen(userId: String, navController: NavHostController) {
                             chat = chat
                         )
                     }
+
+                    val filteredGroups = groups.filter {
+                        it.name.contains(searchQuery, ignoreCase = true)
+                    }
+
+                    items(filteredGroups) { group ->
+                        MiniChatInList(
+                            navController = navController,
+                            chat = group.toChatStub()
+                        )
+                    }
                 }
             }
         }
+    )
+}
+
+
+private fun Group.toChatStub(): Chat {
+    return Chat(
+        id = this.id,
+        title = this.name,
+        lastMessage = this.lastMessage,
+        avatarUrl = this.avatarUrl,
+        userId = this.userId,
     )
 }
 

@@ -1,16 +1,19 @@
 package com.example.rmp_front.data.repository
 
 import com.example.rmp_front.data.ServerClient
+import com.example.rmp_front.data.dto.ChatDto
 import com.example.rmp_front.data.dto.ChatInfoDto
-import com.example.rmp_front.data.dto.ChatListResponse
 import com.example.rmp_front.data.dto.MessageListResponse
 import com.example.rmp_front.data.dto.toDomain
+import com.example.rmp_front.data.models.Chat
 import com.example.rmp_front.data.models.Message
+import com.example.rmp_front.data.models.User
 import com.example.rmp_front.data.models.toDto
+import java.util.UUID
 
 class ChatRepository(private val api: ServerClient) {
 
-    suspend fun getChats(userId : String): ChatListResponse {
+    suspend fun getChats(userId : String): List<ChatDto> {
         return api.getChats(userId)
     }
 
@@ -31,5 +34,9 @@ class ChatRepository(private val api: ServerClient) {
         return dto.toDomain()
     }
 
+
+    suspend fun createChat(user: User): ChatDto {
+        return api.createChat(user)
+    }
 
 }

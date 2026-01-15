@@ -9,7 +9,7 @@ data class ChatDto(
     val id: String,
     val userId: String,
     val title: String,
-    val lastMessage: MessageDto,
+    val lastMessage: MessageDto?,
     val avatarUrl: String?,
 )
 
@@ -22,18 +22,13 @@ data class ChatInfoDto(
 )
 
 
-@Serializable
-data class ChatListResponse(
-    val chats: List<ChatDto>
-)
-
 
 fun ChatDto.toDomain() = Chat(
     id = id,
     userId = userId,
     title = title,
-    lastMessage = lastMessage.toDomain().text,
-    timestamp = lastMessage.toDomain().timestamp,
+    lastMessage = lastMessage?.toDomain()?.text,
+    timestamp = lastMessage?.toDomain()?.timestamp,
     avatarUrl = avatarUrl
 )
 
