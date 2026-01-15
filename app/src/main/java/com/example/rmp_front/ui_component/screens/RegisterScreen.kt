@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -28,6 +29,8 @@ import kotlinx.coroutines.delay
 @Composable
 fun RegisterScreen(navController: NavController) {
 
+    val context = LocalContext.current
+
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -41,7 +44,7 @@ fun RegisterScreen(navController: NavController) {
 
 
     LaunchedEffect(user) {
-        user?.let {
+        if (user != null) {
             navController.navigate(Routes.CHATS_LIST) {
                 popUpTo(Routes.REGISTER) { inclusive = true }
             }
@@ -139,7 +142,7 @@ fun RegisterScreen(navController: NavController) {
 
                     Button(
                         onClick = {
-                            viewModel.register(phone = phone, password = password)
+                            viewModel.register(phone = phone, password = password, context = context)
                         },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(

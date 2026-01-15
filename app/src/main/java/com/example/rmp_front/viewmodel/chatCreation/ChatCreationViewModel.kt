@@ -38,9 +38,9 @@ class ChatCreationViewModel : ViewModel() {
     val error: StateFlow<String?> = _error
 
 
-    fun createGroup(chatTitle: String, users: List<User>) {
+    fun createGroup(userId: String, chatTitle: String, users: List<User>) {
         viewModelScope.launch {
-            val result = chatsCreationUseCase.createGroup(chatTitle, users)
+            val result = chatsCreationUseCase.createGroup(userId, chatTitle, users)
 
             result.onSuccess {
                 _group.value = it
@@ -50,9 +50,9 @@ class ChatCreationViewModel : ViewModel() {
         }
     }
 
-    fun createChat(user: User) {
+    fun createChat(userId: String, user: User) {
         viewModelScope.launch {
-            val result = chatsCreationUseCase.createChat(user)
+            val result = chatsCreationUseCase.createChat(userId, user)
 
             result.onSuccess {
                 _chat.value = it

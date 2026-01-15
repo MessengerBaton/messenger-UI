@@ -35,8 +35,8 @@ class ChatRepository(private val api: ServerClient) {
     }
 
 
-    suspend fun createChat(user: User): ChatDto {
-        return api.createChat(user)
+    suspend fun createChat(userId: String, user: User): ChatDto {
+        return api.createChat(userId, user)
     }
 
 }

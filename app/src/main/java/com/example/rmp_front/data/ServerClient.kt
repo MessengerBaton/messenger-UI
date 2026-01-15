@@ -382,8 +382,9 @@ object ServerClient {
 
     private val chats = mutableListOf(
         ChatDto(
-            id = "4",
+            id = "44",
             title = "Mamont",
+            friendId = "4",
             userId = CURRENT_USER_ID,
             lastMessage = null,
             avatarUrl = null
@@ -430,8 +431,8 @@ object ServerClient {
 
     suspend fun getUser(): UserDto = users.first()
 
-    suspend fun getUserById(id: String): UserDto =
-        users.first { it.id == id }
+    suspend fun getUserById(userId: String): UserDto =
+        users.first { it.id == userId }
 
     suspend fun updateUser(userDto: UserDto): UserDto {
         val index = users.indexOfFirst { it.id == userDto.id }
@@ -445,11 +446,12 @@ object ServerClient {
     // 🔹 CHATS
     // ===============================
 
-    suspend fun createChat(user: User): ChatDto {
+    suspend fun createChat(userId: String, user: User): ChatDto {
         val chat = ChatDto(
             id = UUID.randomUUID().toString(),
+            friendId = user.id,
             title = user.name,
-            userId = CURRENT_USER_ID,
+            userId = userId,
             lastMessage = null,
             avatarUrl = null
         )
@@ -467,6 +469,7 @@ object ServerClient {
         val chat = chats.first { it.id == chatId }
         return ChatInfoDto(
             id = chat.id,
+            friendId = chat.friendId,
             title = chat.title,
             userId = chat.userId,
             avatarUrl = chat.avatarUrl
@@ -504,12 +507,12 @@ object ServerClient {
     // 🔹 GROUPS
     // ===============================
 
-    suspend fun createGroup(chatTitle: String, users: List<UserDto>): GroupDto {
+    suspend fun createGroup(userId: String, chatTitle: String, users: List<UserDto>): GroupDto {
         val group = GroupDto(
             id = UUID.randomUUID().toString(),
             name = chatTitle,
             members = users,
-            userId = CURRENT_USER_ID,
+            userId = userId,
             avatarUrl = null,
             lastMessage = MessageDto("567", "nj", "ya umirayu", SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()), true, )
         )

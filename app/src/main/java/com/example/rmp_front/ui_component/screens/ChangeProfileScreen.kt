@@ -79,15 +79,15 @@ fun ChangeProfileScreen(navController: NavController, mainViewModel: MainViewMod
 
             Button(
                 onClick = {
-                    val updatedUser = user?.copy(
-                        name = name,
-                        nick = username,
-                        phone = phoneNumber,
-                        about = status,
-                        avatarUrl = profileImageUri?.toString()
-                    ) ?: return@Button
-
-                    mainViewModel.updateUser(updatedUser)
+                    mainViewModel.saveUser(
+                        user?.copy(
+                            name = name,
+                            nick = username,
+                            phone = phoneNumber,
+                            about = status,
+                            avatarUrl = profileImageUri?.toString()
+                        ) ?: return@Button
+                    )
                     navController.popBackStack()
                 }
             ) {

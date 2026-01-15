@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 data class ChatDto(
     val id: String,
     val userId: String,
+    val friendId: String,
     val title: String,
     val lastMessage: MessageDto?,
     val avatarUrl: String?,
@@ -17,6 +18,7 @@ data class ChatDto(
 data class ChatInfoDto(
     val id: String,
     val userId: String,
+    val friendId: String,
     val title: String,
     val avatarUrl: String?,
 )
@@ -26,6 +28,7 @@ data class ChatInfoDto(
 fun ChatDto.toDomain() = Chat(
     id = id,
     userId = userId,
+    friendId = friendId,
     title = title,
     lastMessage = lastMessage?.toDomain()?.text,
     timestamp = lastMessage?.toDomain()?.timestamp,
@@ -36,6 +39,7 @@ fun ChatDto.toDomain() = Chat(
 fun ChatInfoDto.toDomain() = Chat(
     id = id,
     userId = userId,
+    friendId = friendId,
     title = title,
     avatarUrl = avatarUrl
 )

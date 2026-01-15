@@ -2,12 +2,14 @@ package com.example.rmp_front.viewmodel.register
 
 
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rmp_front.data.RegisterStep
 import com.example.rmp_front.data.ServerClient
+import com.example.rmp_front.data.SessionManager
 import com.example.rmp_front.data.models.User
 import com.example.rmp_front.data.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,13 +45,20 @@ class RegisterViewModel : ViewModel() {
         _step.value = RegisterStep.PHONE
     }
 
-    fun register(phone: String, password: String) {
+    fun register(phone: String, password: String, context: Context) {
         viewModelScope.launch {
             val result = registerUseCase.invoke(phone, password)
 
             result.onSuccess { user ->
                 _user.value = user
                 _error.value = null
+
+                SessionManager.saveSession(
+                    context = context,
+                    userId = user.id,
+                    token = null
+                )
+
             }.onFailure { e ->
                 _error.value = e.message
             }

@@ -13,30 +13,33 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.example.rmp_front.data.models.Chat
-import com.example.rmp_front.data.models.Group
+import androidx.compose.ui.platform.LocalContext
+import com.example.rmp_front.data.SessionManager
 import com.example.rmp_front.ui_component.components.AddButton
 import com.example.rmp_front.ui_component.components.CustomTextField
 import com.example.rmp_front.ui_component.components.MiniChatInList
+import com.example.rmp_front.ui_component.components.MiniGroupInList
 import com.example.rmp_front.ui_component.navigation.Routes
 import com.example.rmp_front.viewmodel.chatsList.ChatsListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatsListScreen(userId: String, navController: NavHostController) {
+fun ChatsListScreen(navController: NavHostController) {
+
+    val context = LocalContext.current
+
     val viewModel: ChatsListViewModel = viewModel()
     val chats by viewModel.chats.collectAsState()
     val groups by viewModel.groups.collectAsState()
+
     var searchQuery by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
 
-    val error by viewModel.error.collectAsState()
-    val user by viewModel.user.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-
-    LaunchedEffect(userId){
-        viewModel.loadChats(userId)
-        viewModel.loadGroups(userId)
+    LaunchedEffect(Unit){
+        val userId = SessionManager.getUserId(context)
+        if (userId != null) {
+            viewModel.loadAll(userId)
+        }
     }
     val chatCreated by navController.currentBackStackEntry!!
             .savedStateHandle
@@ -45,12 +48,13 @@ fun ChatsListScreen(userId: String, navController: NavHostController) {
 
     LaunchedEffect(chatCreated) {
         if (chatCreated) {
-            viewModel.loadChats(userId)
-            viewModel.loadGroups(userId)
+            val userId = SessionManager.getUserId(context)
+            if (userId != null) {
+                viewModel.loadAll(userId)
+            }
 
             navController.currentBackStackEntry!!
-                .savedStateHandle
-                .set("chat_created", false)
+                .savedStateHandle["chat_created"] = false
         }
     }
 
@@ -124,14 +128,6 @@ fun ChatsListScreen(userId: String, navController: NavHostController) {
                         .padding(horizontal = 15.dp, vertical = 6.dp)
                 )
 
-                // кнопочка чтоб попасть на /tmp
-//                Button(
-//                    onClick = { navController.navigate(Routes.TMP) },
-//                    modifier = Modifier.align(Alignment.CenterHorizontally)
-//                ) {
-//                    Text("СЕРВЕР")
-//                }
-
 
                 LazyColumn(
                     modifier = Modifier
@@ -154,9 +150,9 @@ fun ChatsListScreen(userId: String, navController: NavHostController) {
                     }
 
                     items(filteredGroups) { group ->
-                        MiniChatInList(
+                        MiniGroupInList(
                             navController = navController,
-                            chat = group.toChatStub()
+                            group = group
                         )
                     }
                 }
@@ -164,15 +160,3 @@ fun ChatsListScreen(userId: String, navController: NavHostController) {
         }
     )
 }
-
-
-private fun Group.toChatStub(): Chat {
-    return Chat(
-        id = this.id,
-        title = this.name,
-        lastMessage = this.lastMessage,
-        avatarUrl = this.avatarUrl,
-        userId = this.userId,
-    )
-}
-

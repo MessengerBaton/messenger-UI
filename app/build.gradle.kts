@@ -46,6 +46,16 @@ android {
 
 dependencies {
 
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+
+
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.9.0")

@@ -10,23 +10,31 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.rmp_front.data.SessionManager
 import com.example.rmp_front.data.models.User
 import com.example.rmp_front.ui_component.components.CustomTextField
 import com.example.rmp_front.ui_component.components.SelectedUserItem
 import com.example.rmp_front.ui_component.components.UserSearchItem
 import com.example.rmp_front.viewmodel.chatCreation.ChatCreationViewModel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatCreationScreen(navController: NavHostController) {
+    val context = LocalContext.current
+
     val viewModel: ChatCreationViewModel = viewModel()
     val users by viewModel.users.collectAsState()
     val focusManager = LocalFocusManager.current
+    val coroutineScope = rememberCoroutineScope()
+
 
     var searchQuery by remember { mutableStateOf("") }
     var searchResults by remember { mutableStateOf(emptyList<User>()) }
@@ -203,19 +211,24 @@ fun ChatCreationScreen(navController: NavHostController) {
             if (selectedUsers.isNotEmpty()) {
                 Button(
                     onClick = {
-                        focusManager.clearFocus()
+                        coroutineScope.launch {
+                            val userId = SessionManager.getUserId(context) ?: return@launch
 
-                        if (selectedUsers.size > 1) {
-                            viewModel.createGroup(chatTitle, selectedUsers)
-                        } else{
-                            viewModel.createChat(selectedUsers.first())
+                            focusManager.clearFocus()
+
+                            if (selectedUsers.size > 1) {
+                                viewModel.createGroup(userId, chatTitle, selectedUsers)
+                            } else{
+                                viewModel.createChat(userId, selectedUsers.first())
+                            }
+
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("chat_created", true)
+
+                            navController.popBackStack()
                         }
 
-                        navController.previousBackStackEntry
-                            ?.savedStateHandle
-                            ?.set("chat_created", true)
-
-                        navController.popBackStack()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
